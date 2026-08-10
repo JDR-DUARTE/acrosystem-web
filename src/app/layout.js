@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Acrosystem",
-  description: "Gestor administrativo",
+  description: "Gestor administrativo de acrofobia",
 };
 
 export default function RootLayout({ children }) {
