@@ -1,10 +1,8 @@
+import { redirect } from "next/navigation";
+
+// Página principal raíz (/)
+// En nuestro caso, la página principal simplemente redirige al usuario al panel de control (/dashboard).
+// Si el usuario no está logueado, el middleware de Next.js se encargará de llevarlo a /login automáticamente.
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-negro-fondo-acro text-blanco-acro">
-      <h1 className="text-4xl font-bold text-amarillo-acro">AcroSystem</h1>
-      <p className="mt-4 text-acro-muted">
-        Módulo 1 inicializado correctamente.
-      </p>
-    </main>
-  );
+  redirect("/dashboard");
 }
