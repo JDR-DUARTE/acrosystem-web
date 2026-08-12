@@ -23,6 +23,15 @@ export function useProductos(filters = {}) {
   });
 }
 
+export function useProducto(id) {
+  return useQuery({
+    queryKey: ["producto", id],
+    queryFn: () =>
+      fetchJson(`/api/productos/${id}`).then((d) => d?.producto ?? null),
+    enabled: !!id,
+  });
+}
+
 export function useCategorias() {
   return useQuery({
     queryKey: ["categorias"],
@@ -48,14 +57,17 @@ export function useCrearProducto() {
 export function useActualizarProducto() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...input }) =>
-      fetchJson(`/api/productos/${id}`, {
+    mutationFn: ({ id, ...input }) => {
+      const payload = input.data ? input.data : input;
+      return fetchJson(`/api/productos/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      }),
+        body: JSON.stringify(payload),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["productos"] });
+      queryClient.invalidateQueries({ queryKey: ["producto"] });
     },
   });
 }
