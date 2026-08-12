@@ -39,13 +39,27 @@ export async function listProductos({ search, categoria, stockBajo } = {}) {
   return (data ?? []).map(mapProducto);
 }
 
+export async function getProducto(id) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("productos")
+    .select(PRODUCTO_SELECT)
+    .eq("id_producto", id)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+  return mapProducto(data);
+}
+
 export async function crearProducto(input) {
   const supabase = await createClient();
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria } = input;
+  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
+
+  const catId = idCategoria || categoriaId || null;
 
   const { data, error } = await supabase
     .from("productos")
@@ -54,7 +68,7 @@ export async function crearProducto(input) {
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
       stock_sistema: Number(stock) || 0,
-      id_categoria_producto: idCategoria || null,
+      id_categoria_producto: catId ? Number(catId) : null,
     })
     .select(PRODUCTO_SELECT)
     .single();
@@ -68,8 +82,10 @@ export async function actualizarProducto(id, input) {
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria } = input;
+  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
+
+  const catId = idCategoria || categoriaId || null;
 
   const { data, error } = await supabase
     .from("productos")
@@ -78,7 +94,7 @@ export async function actualizarProducto(id, input) {
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
       stock_sistema: Number(stock) || 0,
-      id_categoria_producto: idCategoria || null,
+      id_categoria_producto: catId ? Number(catId) : null,
     })
     .eq("id_producto", id)
     .select(PRODUCTO_SELECT)

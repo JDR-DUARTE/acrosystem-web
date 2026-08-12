@@ -19,3 +19,14 @@ export function useCheckin() {
       }),
   });
 }
+
+export function useConsultaPlan() {
+  return useMutation({
+    mutationFn: (query) =>
+      fetchJson("/api/checkin/consulta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      }),
+  });
+}
