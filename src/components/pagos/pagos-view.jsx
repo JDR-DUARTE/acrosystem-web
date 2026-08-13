@@ -53,8 +53,8 @@ export default function PagosView() {
     new Set(
       (productos || [])
         .map((p) => p.nombre)
-        .concat(["Pase Diario", "Plan 10", "Plan Mensual", "Plan Niños"])
-    )
+        .concat(["Pase Diario", "Plan 10", "Plan Mensual", "Plan Niños"]),
+    ),
   ).sort();
 
   // Formatting date for display (DD/MM/YYYY)
@@ -78,7 +78,7 @@ export default function PagosView() {
   const pageIndex = Math.min(currentPage, totalPages);
   const paginatedPagos = (pagos || []).slice(
     (pageIndex - 1) * itemsPerPage,
-    pageIndex * itemsPerPage
+    pageIndex * itemsPerPage,
   );
 
   return (
@@ -119,11 +119,18 @@ export default function PagosView() {
             }}
             className="h-12 w-full appearance-none rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
           >
-            <option value="ALL" className="bg-negro-fondo-acro text-blanco-acro">
+            <option
+              value="ALL"
+              className="bg-negro-fondo-acro text-blanco-acro"
+            >
               Producto
             </option>
             {productOptions.map((opt) => (
-              <option key={opt} value={opt} className="bg-negro-fondo-acro text-blanco-acro">
+              <option
+                key={opt}
+                value={opt}
+                className="bg-negro-fondo-acro text-blanco-acro"
+              >
                 {opt}
               </option>
             ))}
@@ -141,9 +148,8 @@ export default function PagosView() {
               setCurrentPage(1);
             }}
             placeholder="Desde"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
 
         {/* Fecha Hasta */}
@@ -156,9 +162,8 @@ export default function PagosView() {
               setCurrentPage(1);
             }}
             placeholder="Hasta"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
       </div>
 
@@ -193,8 +198,10 @@ export default function PagosView() {
           {/* Table Rows */}
           <div className="divide-y divide-white/5 max-h-[600px] overflow-y-auto">
             {(pagos || []).map((p) => {
-              const compradorNombre = p.comprador?.nombreCompleto || "Cliente Ocasional";
-              const itemsResumen = p.items.map((i) => i.nombre).join(", ") || "Venta";
+              const compradorNombre =
+                p.comprador?.nombreCompleto || "Cliente Ocasional";
+              const itemsResumen =
+                p.items.map((i) => i.nombre).join(", ") || "Venta";
 
               return (
                 <div
@@ -261,7 +268,8 @@ export default function PagosView() {
                     <User className="size-3.5" /> Comprador
                   </span>
                   <p className="mt-0.5 font-bold text-blanco-acro">
-                    {selectedPago.comprador?.nombreCompleto || "Cliente Ocasional"}
+                    {selectedPago.comprador?.nombreCompleto ||
+                      "Cliente Ocasional"}
                   </p>
                   {selectedPago.comprador?.cedula && (
                     <p className="text-xs text-acro-muted">
@@ -279,10 +287,13 @@ export default function PagosView() {
                   </p>
                   <p className="text-xs text-acro-muted">
                     {selectedPago.fechaHora
-                      ? new Date(selectedPago.fechaHora).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })
+                      ? new Date(selectedPago.fechaHora).toLocaleTimeString(
+                          [],
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          },
+                        )
                       : ""}
                   </p>
                 </div>
@@ -305,7 +316,8 @@ export default function PagosView() {
                           {item.nombre}
                         </p>
                         <p className="text-xs text-acro-muted">
-                          {item.cantidad} x ${item.precioUnitario.toFixed(2)} ({item.tipoItem})
+                          {item.cantidad} x ${item.precioUnitario.toFixed(2)} (
+                          {item.tipoItem})
                         </p>
                       </div>
                       <span className="font-bold text-blanco-acro">

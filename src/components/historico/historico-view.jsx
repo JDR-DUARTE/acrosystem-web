@@ -15,13 +15,7 @@ import {
 
 import { useHistorico } from "@/hooks/use-historico";
 
-const PLAN_OPTIONS = [
-  "Plan Mensual",
-  "Pase Diario",
-  "Plan 10",
-  "Plan Niños",
- 
-];
+const PLAN_OPTIONS = ["Plan Mensual", "Pase Diario", "Plan 10", "Plan Niños"];
 
 // Componente HistoricoView
 // Muestra una tabla con el registro histórico de los check-ins (asistencias) al gimnasio.
@@ -37,7 +31,12 @@ export default function HistoricoView() {
 
   // Consulta los datos a la API usando React Query
   // Cada vez que cambian los filtros, React Query hace una nueva petición en automático
-  const { data: historico, isLoading, isError, error } = useHistorico({
+  const {
+    data: historico,
+    isLoading,
+    isError,
+    error,
+  } = useHistorico({
     search: search.trim() || undefined,
     plan: plan === "ALL" ? undefined : plan,
     fechaDesde: fechaDesde || undefined,
@@ -63,7 +62,7 @@ export default function HistoricoView() {
             className="h-12 w-full rounded-xl bg-gris-oscuro-acro pl-11 pr-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
           />
         </div>
-        
+
         {/* Filtro por Plan */}
         <div className="relative w-full">
           <select
@@ -71,18 +70,25 @@ export default function HistoricoView() {
             onChange={(e) => setPlan(e.target.value)}
             className="h-12 w-full appearance-none rounded-xl bg-gris-oscuro-acro pl-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
           >
-            <option value="ALL" className="bg-negro-fondo-acro text-blanco-acro">
+            <option
+              value="ALL"
+              className="bg-negro-fondo-acro text-blanco-acro"
+            >
               Tipo de plan
             </option>
             {PLAN_OPTIONS.map((p) => (
-              <option key={p} value={p} className="bg-negro-fondo-acro text-blanco-acro">
+              <option
+                key={p}
+                value={p}
+                className="bg-negro-fondo-acro text-blanco-acro"
+              >
                 {p}
               </option>
             ))}
           </select>
           <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
-        
+
         {/* Filtro Fecha Desde */}
         <div className="relative w-full">
           <input
@@ -90,11 +96,10 @@ export default function HistoricoView() {
             value={fechaDesde}
             onChange={(e) => setFechaDesde(e.target.value)}
             placeholder="Desde"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
-        
+
         {/* Filtro Fecha Hasta */}
         <div className="relative w-full">
           <input
@@ -102,9 +107,8 @@ export default function HistoricoView() {
             value={fechaHasta}
             onChange={(e) => setFechaHasta(e.target.value)}
             placeholder="Hasta"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
       </div>
 
@@ -116,7 +120,9 @@ export default function HistoricoView() {
       ) : isError ? (
         <div className="flex h-40 flex-col items-center justify-center gap-2 rounded-2xl bg-gris-oscuro-acro p-6 text-center text-acro-danger border border-gris-claro-acro/20">
           <AlertCircle className="size-8" />
-          <p>{error?.message || "Error al cargar el historial de check-ins."}</p>
+          <p>
+            {error?.message || "Error al cargar el historial de check-ins."}
+          </p>
         </div>
       ) : !historico || historico.length === 0 ? (
         <div className="flex h-48 flex-col items-center justify-center gap-2 rounded-2xl bg-gris-oscuro-acro p-6 text-center text-acro-muted border border-gris-claro-acro/20">
@@ -137,7 +143,7 @@ export default function HistoricoView() {
             <div className="col-span-3 text-center">Fecha</div>
             <div className="col-span-2 text-right">Hora</div>
           </div>
-          
+
           {/* Filas (Scrolleables si hay muchas) */}
           <div className="divide-y divide-white/5 max-h-[600px] overflow-y-auto">
             {historico.map((item) => (
@@ -187,7 +193,7 @@ export default function HistoricoView() {
                 <X className="size-6" />
               </button>
             </div>
-            
+
             {/* Cuerpo del Modal con tarjetas informativas */}
             <div className="mt-4 flex flex-col gap-3.5 text-sm">
               <div className="rounded-xl bg-negro-fondo-acro p-3.5">
@@ -203,7 +209,7 @@ export default function HistoricoView() {
                   </p>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl bg-negro-fondo-acro p-3.5">
                   <span className="flex items-center gap-1.5 text-xs text-acro-muted font-medium">
@@ -222,7 +228,7 @@ export default function HistoricoView() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="rounded-xl bg-negro-fondo-acro p-3.5">
                 <span className="flex items-center gap-1.5 text-xs text-acro-muted font-medium">
                   <Ticket className="size-3.5 text-amarillo-acro" /> Plan
@@ -231,7 +237,7 @@ export default function HistoricoView() {
                   {selectedRecord.plan}
                 </p>
               </div>
-              
+
               <div className="mt-2 flex justify-end">
                 <button
                   type="button"
