@@ -111,12 +111,13 @@ export async function registrarCheckin({ query }) {
   // RN-RES-04: Restricción de horario por edad (7-12 años)
   if (miembro.fecha_nacimiento) {
     const nacimiento = new Date(miembro.fecha_nacimiento);
-    const edad = new Date().getFullYear() - nacimiento.getFullYear();
+    const ahora = new Date();
+    const edad = ahora.getFullYear() - nacimiento.getFullYear();
     if (edad >= 7 && edad <= 12) {
       if (sub.planes?.requiere_agenda) {
         // En lugar de una hora fija que no está definida, validamos que esté agendado para hoy
         const diasSemana = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-        const diaHoy = diasSemana[new Date().getDay()];
+        const diaHoy = diasSemana[ahora.getDay()];
         const agendadoHoy = (sub.suscripcion_dias || []).some(d => d.dia_semana === diaHoy);
         
         if (!agendadoHoy) {
@@ -368,4 +369,5 @@ export async function consultarPlan({ query }) {
     esActivo: false,
   };
 }
+
 
