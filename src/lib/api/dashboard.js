@@ -1,12 +1,12 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
-import { hoyVE, inicioDiaVE_UTC, haceNdiasVE_UTC } from "@/lib/timezone";
 
 export async function getDashboardStats() {
   const supabase = await createClient();
-  const hoyStr = hoyVE();
-  const inicioHoy = inicioDiaVE_UTC(hoyStr);
-  const hace7dias = haceNdiasVE_UTC(7);
+  const hoyStr = new Date().toISOString().slice(0, 10);
+  const inicioHoy = `${hoyStr}T00:00:00`;
+  const hace7dias = new Date();
+  hace7dias.setDate(hace7dias.getDate() - 7);
 
   const [totalRes, activosRes, ingresosRes, checkinsRes] = await Promise.all([
     supabase.from("miembros").select("*", { count: "exact", head: true }),
@@ -22,7 +22,7 @@ export async function getDashboardStats() {
     supabase
       .from("check_in")
       .select("*", { count: "exact", head: true })
-      .gte("fecha_hora", hace7dias),
+      .gte("fecha_hora", hace7dias.toISOString()),
   ]);
 
   const miembrosActivos = new Set(
@@ -40,7 +40,7 @@ export async function getDashboardStats() {
 // Nombres de los niños agendados por día de la semana (planes con agenda).
 export async function getHorarioInfantil() {
   const supabase = await createClient();
-  const hoyStr = hoyVE();
+  const hoyStr = new Date().toISOString().slice(0, 10);
 
   const { data, error } = await supabase
     .from("suscripcion_dias")

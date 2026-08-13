@@ -1,15 +1,18 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentEmployee } from "@/lib/auth";
-import { hoyVE } from "@/lib/timezone";
+
+function hoyStr() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 // Monedas/tasas del día que administra el negocio.
 const MONEDAS = ["BCV", "COP", "BINANCE"];
 
-// Devuelve las tasas del día de hoy (VE) como { BCV, COP, BINANCE }.
+// Devuelve las tasas del día de hoy como { BCV, COP, BINANCE }.
 export async function getTasasHoy() {
   const supabase = await createClient();
-  const fecha = hoyVE();
+  const fecha = hoyStr();
   const { data, error } = await supabase
     .from("tasas_cambio")
     .select("moneda, valor_tasa")
@@ -25,10 +28,10 @@ export async function getTasasHoy() {
 }
 
 // RN-RES-07: la tasa de cambio debe estar actualizada para operar.
-// Devuelve la última fecha registrada y si está vigente (>= hoy VE).
+// Devuelve la última fecha registrada y si está vigente.
 export async function getTasaVigente() {
   const supabase = await createClient();
-  const hoy = hoyVE();
+  const hoy = hoyStr();
   const { data, error } = await supabase
     .from("tasas_cambio")
     .select("fecha_tasa")
@@ -41,13 +44,13 @@ export async function getTasaVigente() {
   return { fechaMax, hoy, vigente: Boolean(fechaMax) && fechaMax >= hoy };
 }
 
-// Guarda (upsert) las tasas del día de hoy (VE).
+// Guarda (upsert) las tasas del día de hoy.
 export async function guardarTasasHoy(input = {}) {
   const supabase = await createClient();
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const fecha = hoyVE();
+  const fecha = hoyStr();
   const rows = MONEDAS.map((moneda) => ({ moneda, valor: input[moneda] }))
     .filter((r) => r.valor !== undefined && r.valor !== null && r.valor !== "")
     .map((r) => {

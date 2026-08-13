@@ -17,12 +17,8 @@ const SELECT = `
   )
 `;
 
-function hoyVEStr() {
-  return new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString().slice(0, 10);
-}
-
 function activeSubscription(suscripciones = []) {
-  const today = hoyVEStr();
+  const today = new Date().toISOString().slice(0, 10);
   return (
     suscripciones.find(
       (s) => s.estado === "Activo" && s.fecha_expiracion >= today,
@@ -150,7 +146,7 @@ export async function createMiembro(input) {
     qr_codigo: crypto.randomUUID(),
   });
   if (miembroError) {
-    // Si falla la inserción del miembro, hacemos rollback borrando la persona
+    // Roll back the persona row so we don't leave orphans.
     await supabase.from("personas").delete().eq("id_persona", persona.id_persona);
     throw new Error(miembroError.message);
   }
