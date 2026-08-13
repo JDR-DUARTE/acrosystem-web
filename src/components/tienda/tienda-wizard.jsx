@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
+  Activity,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +35,13 @@ import { useProductos, useCrearVenta } from "@/hooks/use-tienda";
 import MemberCombobox from "@/components/tienda/member-combobox";
 
 const MONEDAS = ["COP", "VES", "USD", "EUR", "USDT"];
-const FORMAS_PAGO = ["Efectivo", "Transferencia", "Pago móvil", "Tarjeta", "Zelle"];
+const FORMAS_PAGO = [
+  "Efectivo",
+  "Transferencia",
+  "Pago móvil",
+  "Tarjeta",
+  "Zelle",
+];
 const CATEGORIAS_PRECIO = ["Regular", "Miembro", "Empleado"];
 const DIAS_SEMANA = [
   "Lunes",
@@ -89,11 +96,15 @@ function ProductCard({ producto, onAdd }) {
   return (
     <article className="flex flex-col justify-between gap-2 rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-4 shadow-xl">
       <div>
-        <h3 className="font-semibold text-blanco-acro text-base truncate">{producto.nombre}</h3>
+        <h3 className="font-semibold text-blanco-acro text-base truncate">
+          {producto.nombre}
+        </h3>
         <p className="line-clamp-2 text-xs text-acro-muted mt-0.5">
           {producto.descripcion || "Texto descripción"}
         </p>
-        <p className="text-xl font-bold text-blanco-acro mt-2">{money(producto.precio)}</p>
+        <p className="text-xl font-bold text-blanco-acro mt-2">
+          {money(producto.precio)}
+        </p>
       </div>
       <div className="mt-3 flex items-center justify-between pt-1">
         {alquiler ? (
@@ -122,12 +133,16 @@ function PlanCard({ plan, onAdd, added }) {
   return (
     <article className="flex flex-col justify-between gap-2 rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-4 shadow-xl">
       <div>
-        <h3 className="font-semibold text-blanco-acro text-base truncate">{plan.nombre}</h3>
+        <h3 className="font-semibold text-blanco-acro text-base truncate">
+          {plan.nombre}
+        </h3>
         <p className="text-xs text-acro-muted mt-0.5">
           {plan.pasesTotales > 0 ? `${plan.pasesTotales} pases · ` : ""}
           {plan.duracionDias} días
         </p>
-        <p className="text-xl font-bold text-blanco-acro mt-2">{money(plan.precio)}</p>
+        <p className="text-xl font-bold text-blanco-acro mt-2">
+          {money(plan.precio)}
+        </p>
       </div>
       <div className="mt-3 flex items-center justify-end pt-1">
         <button
@@ -152,7 +167,11 @@ export default function TiendaWizard({
 }) {
   const cards = [
     { key: PLANES_KEY, nombre: "Planes", icon: Ticket },
-    ...categorias.map((c) => ({ key: c.id, nombre: c.nombre, icon: Handshake })),
+    ...categorias.map((c) => ({
+      key: c.id,
+      nombre: c.nombre,
+      icon: Handshake,
+    })),
   ];
 
   const [step, setStep] = useState(1);
@@ -241,7 +260,9 @@ export default function TiendaWizard({
 
   const planesFiltrados = useMemo(() => {
     const t = search.trim().toLowerCase();
-    return t ? planes.filter((p) => p.nombre.toLowerCase().includes(t)) : planes;
+    return t
+      ? planes.filter((p) => p.nombre.toLowerCase().includes(t))
+      : planes;
   }, [planes, search]);
 
   const subtotal = useMemo(
@@ -351,7 +372,9 @@ export default function TiendaWizard({
     }
     const sinDias = planesConAgenda.find((i) => (i.dias ?? []).length === 0);
     if (sinDias) {
-      toast.error(`Selecciona los días de asistencia para "${sinDias.nombre}".`);
+      toast.error(
+        `Selecciona los días de asistencia para "${sinDias.nombre}".`,
+      );
       return;
     }
     try {
@@ -392,7 +415,9 @@ export default function TiendaWizard({
     return (
       <section className="mx-auto flex w-full max-w-md flex-col items-center gap-4 py-16 text-center">
         <CheckCircle2 className="size-16 text-amarillo-acro" />
-        <h1 className="text-2xl font-bold text-blanco-acro">Venta registrada</h1>
+        <h1 className="text-2xl font-bold text-blanco-acro">
+          Venta registrada
+        </h1>
         <p className="text-acro-muted">
           {ventaOk.items} artículo(s) · Total {money(ventaOk.total)}
         </p>
@@ -480,7 +505,9 @@ export default function TiendaWizard({
                         : "border-border bg-gris-oscuro-acro text-blanco-acro hover:bg-gris-claro-acro/10",
                     )}
                   >
-                    <span className="text-base sm:text-lg font-semibold truncate">{c.nombre}</span>
+                    <span className="text-base sm:text-lg font-semibold truncate">
+                      {c.nombre}
+                    </span>
                     <Icon
                       className={cn(
                         "size-9 self-end shrink-0",
@@ -566,33 +593,12 @@ export default function TiendaWizard({
                       <p className="line-clamp-2 text-xs text-acro-muted mt-0.5">
                         {i.descripcion || "Texto descripción"}
                       </p>
-                      <p className="text-xl font-bold text-blanco-acro mt-2">{money(i.precio)}</p>
+                      <p className="text-xl font-bold text-blanco-acro mt-2">
+                        {money(i.precio)}
+                      </p>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between pt-1">
-                      {i.kind === "producto" ? (
-                        <Stepper
-                          value={i.cantidad}
-                          onDecrement={() => setQty(i.key, i.cantidad - 1)}
-                          onIncrement={() => setQty(i.key, i.cantidad + 1)}
-                        />
-                      ) : i.requiereAgenda ? (
-                        <select
-                          value={i.dias?.[0] || ""}
-                          onChange={(e) => toggleDia(i.key, e.target.value)}
-                          className="bg-gris-oscuro-acro text-blanco-acro text-xs rounded-lg px-2.5 py-1.5 border border-gris-claro-acro outline-none cursor-pointer"
-                        >
-                          <option value="">Inicio</option>
-                          {DIAS_SEMANA.map((d) => (
-                            <option key={d} value={d}>
-                              {d}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <span className="text-xs text-acro-muted">Plan</span>
-                      )}
-
+                    <div className="mt-2 flex items-center justify-end">
                       <button
                         type="button"
                         onClick={() => setItemToDelete(i)}
@@ -602,13 +608,70 @@ export default function TiendaWizard({
                         <Trash2 className="size-6 stroke-[2.2]" />
                       </button>
                     </div>
+
+                    <div className="mt-3">
+                      {i.kind === "producto" ? (
+                        <div className="flex w-full">
+                          <Stepper
+                            value={i.cantidad}
+                            onDecrement={() => setQty(i.key, i.cantidad - 1)}
+                            onIncrement={() => setQty(i.key, i.cantidad + 1)}
+                          />
+                        </div>
+                      ) : (
+                        <div className="relative w-full">
+                          <input
+                            type="date"
+                            value={i.fechaInicio || ""}
+                            onChange={(e) => {
+                              setCart((curr) =>
+                                curr.map((item) =>
+                                  item.key === i.key
+                                    ? { ...item, fechaInicio: e.target.value }
+                                    : item,
+                                ),
+                              );
+                            }}
+                            className={`w-full bg-[#4E4E4E] text-sm rounded-lg pl-3 pr-8 py-2 border-none outline-none focus:ring-1 focus:ring-amarillo-acro appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer relative z-10 ${i.fechaInicio ? "text-blanco-acro" : "text-transparent"}`}
+                            placeholder="Inicia hoy"
+                          />
+                          {/* Label manual sobre el input date vacío */}
+                          {!i.fechaInicio && (
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-blanco-acro pointer-events-none z-20">
+                              Inicia hoy
+                            </span>
+                          )}
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none z-20 text-blanco-acro">
+                            <svg
+                              width="14"
+                              height="10"
+                              viewBox="0 0 14 10"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M1.38574 1.83838L6.88574 7.33838L12.3857 1.83838"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </article>
                 ))}
               </div>
 
               <div className="mt-6 flex items-center justify-between border-t border-gris-claro-acro/30 pt-4 px-1">
-                <span className="text-base text-acro-muted">Subtotal ({totalItems} items)</span>
-                <span className="text-xl font-bold text-blanco-acro">{money(subtotal)}</span>
+                <span className="text-base text-acro-muted">
+                  Subtotal ({totalItems} items)
+                </span>
+                <span className="text-xl font-bold text-blanco-acro">
+                  {money(subtotal)}
+                </span>
               </div>
             </div>
           )}
@@ -621,183 +684,229 @@ export default function TiendaWizard({
             e.preventDefault();
             confirmar();
           }}
-          className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5"
+          className="flex flex-col gap-10 relative pb-40"
         >
-          <div className="flex flex-col gap-2">
-            <Label className="text-base text-blanco-acro">Categoría</Label>
-            <Select value={categoriaPrecio} onValueChange={setCategoriaPrecio}>
-              <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORIAS_PRECIO.map((c) => (
-                  <SelectItem key={c} value={c}>
-                    {c}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {/* Datos Section */}
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 text-blanco-acro mb-1">
+              <Activity className="size-5 text-amarillo-acro" />
+              <h2 className="text-xl font-semibold">Datos</h2>
+            </div>
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-base text-blanco-acro">
-              Nombre y Apellido{" "}
-              {hasPlan && <span className="text-amarillo-acro">*</span>}
-            </Label>
-            <MemberCombobox value={miembro} onChange={setMiembro} />
-            {!miembro && (
-              <button
-                type="button"
-                onClick={irACrearMiembro}
-                className="flex items-center gap-1.5 self-start text-sm font-medium text-amarillo-acro hover:underline"
+            <div className="flex flex-col gap-2 max-w-xl">
+              <Label className="text-sm font-normal text-blanco-acro">
+                Categoria
+              </Label>
+              <Select
+                value={categoriaPrecio}
+                onValueChange={setCategoriaPrecio}
               >
-                <UserPlus className="size-4" />
-                ¿No está registrado? Agregar miembro
-              </button>
-            )}
-          </div>
+                <SelectTrigger className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-blanco-acro">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORIAS_PRECIO.map((c) => (
+                    <SelectItem key={c} value={c}>
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          {planesConAgenda.map((i) => (
-            <fieldset
-              key={i.key}
-              className="rounded-xl border border-border p-4 md:col-span-2"
-            >
-              <legend className="px-1 text-base font-semibold text-blanco-acro">
-                Días de asistencia · {i.nombre}
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                {DIAS_SEMANA.map((dia) => {
-                  const activo = (i.dias ?? []).includes(dia);
-                  return (
-                    <button
-                      key={dia}
-                      type="button"
-                      onClick={() => toggleDia(i.key, dia)}
-                      className={cn(
-                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                        activo
-                          ? "bg-amarillo-acro text-negro-fondo-acro"
-                          : "bg-negro-fondo-acro text-blanco-acro hover:bg-white/10",
-                      )}
-                    >
-                      {dia}
-                    </button>
-                  );
-                })}
-              </div>
-            </fieldset>
-          ))}
-
-          <fieldset className="rounded-xl border border-border p-4 md:col-span-2">
-            <legend className="px-1 text-base font-semibold text-blanco-acro">
-              Moneda
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {MONEDAS.map((m) => (
-                <label
-                  key={m}
-                  className="flex cursor-pointer items-center gap-2 text-blanco-acro"
+            <div className="flex flex-col gap-2 max-w-xl">
+              <Label className="text-sm font-normal text-blanco-acro">
+                Nombre y Apellido
+                {hasPlan && <span className="text-amarillo-acro ml-1">*</span>}
+              </Label>
+              <MemberCombobox value={miembro} onChange={setMiembro} />
+              {!miembro && (
+                <button
+                  type="button"
+                  onClick={irACrearMiembro}
+                  className="flex items-center gap-1.5 self-start text-sm font-medium text-amarillo-acro hover:underline"
                 >
-                  <input
-                    type="radio"
-                    name="moneda"
-                    value={m}
-                    checked={moneda === m}
-                    onChange={() => setMoneda(m)}
-                    className="accent-amarillo-acro"
-                  />
-                  {m}
-                </label>
-              ))}
+                  <UserPlus className="size-4" />
+                  ¿No está registrado? Agregar miembro
+                </button>
+              )}
             </div>
-          </fieldset>
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-base font-semibold text-blanco-acro">
-              Forma de pago
-            </Label>
-            <Select value={formaPago} onValueChange={setFormaPago}>
-              <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {FORMAS_PAGO.map((f) => (
-                  <SelectItem key={f} value={f}>
-                    {f}
-                  </SelectItem>
+            {planesConAgenda.length > 0 && (
+              <div className="flex flex-col gap-4 max-w-xl mt-2">
+                {planesConAgenda.map((i) => (
+                  <div key={i.key} className="flex flex-col gap-2">
+                    <Label className="text-sm font-normal text-blanco-acro">
+                      Días de asistencia · {i.nombre}
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {DIAS_SEMANA.map((dia) => {
+                        const activo = (i.dias ?? []).includes(dia);
+                        return (
+                          <button
+                            key={dia}
+                            type="button"
+                            onClick={() => toggleDia(i.key, dia)}
+                            className={cn(
+                              "rounded-lg px-3 py-2 text-xs font-medium transition-colors border",
+                              activo
+                                ? "bg-amarillo-acro text-negro-fondo-acro border-amarillo-acro"
+                                : "bg-[#4E4E4E] text-blanco-acro border-transparent hover:border-gris-claro-acro",
+                            )}
+                          >
+                            {dia}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 ))}
-              </SelectContent>
-            </Select>
-          </div>
+              </div>
+            )}
+          </section>
 
-          <div className="flex flex-col gap-2">
-            <Label className="text-base font-semibold text-blanco-acro">
-              Promoción
-            </Label>
-            <Select
-              value={idPromo || "none"}
-              onValueChange={(v) => setIdPromo(v === "none" ? "" : v)}
-            >
-              <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Sin promoción</SelectItem>
-                {promos.map((p) => (
-                  <SelectItem key={p.id} value={String(p.id)}>
-                    {p.nombre} ({p.valorDescuento}%)
-                  </SelectItem>
+          {/* Moneda Section */}
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 text-blanco-acro mb-1">
+              <Activity className="size-5 text-amarillo-acro" />
+              <h2 className="text-xl font-semibold">Moneda</h2>
+            </div>
+
+            <div className="flex max-w-fit border border-gris-oscuro-acro rounded-xl p-1 bg-negro-fondo-acro h-12">
+              <div className="flex items-center gap-6 px-4 w-full h-full">
+                {MONEDAS.map((m) => (
+                  <label
+                    key={m}
+                    className="flex cursor-pointer items-center gap-2 text-blanco-acro text-sm"
+                  >
+                    <div className="relative flex items-center justify-center size-4">
+                      <input
+                        type="radio"
+                        name="moneda"
+                        value={m}
+                        checked={moneda === m}
+                        onChange={() => setMoneda(m)}
+                        className="peer appearance-none size-4 rounded-full border border-blanco-acro checked:border-blanco-acro transition-colors cursor-pointer"
+                      />
+                      <div className="absolute size-2 rounded-full bg-blanco-acro scale-0 peer-checked:scale-100 transition-transform pointer-events-none" />
+                    </div>
+                    {m}
+                  </label>
                 ))}
-              </SelectContent>
-            </Select>
+              </div>
+            </div>
+          </section>
+
+          {/* Forma de pago Section */}
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 text-blanco-acro mb-1">
+              <Activity className="size-5 text-amarillo-acro" />
+              <h2 className="text-xl font-semibold">Forma de pago</h2>
+            </div>
+
+            <div className="flex flex-col gap-2 max-w-xl">
+              <Select value={formaPago} onValueChange={setFormaPago}>
+                <SelectTrigger className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-blanco-acro">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {FORMAS_PAGO.map((f) => (
+                    <SelectItem key={f} value={f}>
+                      {f}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </section>
+
+          {/* Promoción Section */}
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 text-blanco-acro mb-1">
+              <Activity className="size-5 text-amarillo-acro" />
+              <h2 className="text-xl font-semibold">Promoción</h2>
+            </div>
+
+            <div className="flex flex-col gap-2 max-w-xl">
+              <Select
+                value={idPromo || "none"}
+                onValueChange={(v) => setIdPromo(v === "none" ? "" : v)}
+              >
+                <SelectTrigger className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-blanco-acro">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No aplica</SelectItem>
+                  {promos.map((p) => (
+                    <SelectItem key={p.id} value={String(p.id)}>
+                      {p.nombre} ({p.valorDescuento}%)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </section>
+
+          {/* Monto que abona el cliente Section */}
+          <section className="flex flex-col gap-5">
+            <div className="flex items-center gap-2 text-blanco-acro mb-1">
+              <Activity className="size-5 text-amarillo-acro" />
+              <h2 className="text-xl font-semibold">
+                Monto que abona el cliente
+              </h2>
+            </div>
+
+            <div className="flex flex-col gap-2 max-w-xl">
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder={`Total: ${total.toFixed(2)}`}
+                value={montoPagado}
+                onChange={(e) => setMontoPagado(e.target.value)}
+                className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-sm text-blanco-acro"
+              />
+              {montoPagado !== "" && Number(montoPagado) < total && (
+                <p className="text-sm text-acro-danger">
+                  Deuda a generar: {money(total - Number(montoPagado))}
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Bottom Floating Summary & Confirm Button */}
+          <div className="absolute bottom-0 right-0 left-0 pt-6 flex justify-end">
+            <div className="flex flex-col items-end gap-4 max-w-xs w-full">
+              <dl className="w-full rounded-xl border border-gris-oscuro-acro p-4 text-blanco-acro space-y-1 bg-negro-fondo-acro">
+                <div className="flex justify-between text-sm">
+                  <dt className="text-blanco-acro">Items({totalItems})</dt>
+                  <dd>{money(subtotal)}</dd>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <dt className="text-blanco-acro">Descuento</dt>
+                  <dd>{money(descuento)}</dd>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <dt className="text-blanco-acro">Total</dt>
+                  <dd>{money(total)}</dd>
+                </div>
+              </dl>
+
+              <button
+                type="submit"
+                disabled={
+                  crearVenta.isPending || cart.length === 0 || !tasaVigente
+                }
+                className="flex h-10 px-8 items-center justify-center rounded-full bg-amarillo-acro text-sm font-bold text-negro-fondo-acro hover:brightness-110 active:scale-95 transition-all disabled:opacity-60"
+              >
+                {crearVenta.isPending ? (
+                  <Loader2 className="size-5 animate-spin mx-auto" />
+                ) : (
+                  "Confirmar"
+                )}
+              </button>
+            </div>
           </div>
-
-          <dl className="rounded-2xl border border-border p-4 text-blanco-acro">
-            <div className="flex justify-between">
-              <dt className="text-acro-muted">Items ({totalItems})</dt>
-              <dd>{money(subtotal)}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-acro-muted">Descuento</dt>
-              <dd>{money(descuento)}</dd>
-            </div>
-            <div className="mt-1 flex justify-between text-lg font-bold">
-              <dt>Total a pagar</dt>
-              <dd>{money(total)}</dd>
-            </div>
-          </dl>
-
-          <div className="flex flex-col gap-2">
-            <Label className="text-base font-semibold text-blanco-acro">
-              Monto que abona el cliente
-            </Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder={`Total: ${total.toFixed(2)}`}
-              value={montoPagado}
-              onChange={(e) => setMontoPagado(e.target.value)}
-              className="h-12 w-full bg-gris-oscuro-acro text-lg text-blanco-acro"
-            />
-            {montoPagado !== "" && Number(montoPagado) < total && (
-              <p className="text-sm text-acro-danger">
-                Deuda a generar: {money(total - Number(montoPagado))}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={crearVenta.isPending || cart.length === 0 || !tasaVigente}
-            className="flex h-14 items-center justify-center gap-2 rounded-xl bg-amarillo-acro text-lg font-semibold text-negro-fondo-acro hover:scale-[1.01] disabled:opacity-60 md:col-span-2"
-          >
-            {crearVenta.isPending ? (
-              <Loader2 className="size-6 animate-spin" />
-            ) : (
-              "Confirmar"
-            )}
-          </button>
         </form>
       )}
 

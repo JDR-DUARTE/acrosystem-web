@@ -30,7 +30,10 @@ function mapProducto(row) {
 
 export async function listProductos({ search, categoria, stockBajo } = {}) {
   const supabase = await createClient();
-  let query = supabase.from("productos").select(PRODUCTO_SELECT).order("nombre");
+  let query = supabase
+    .from("productos")
+    .select(PRODUCTO_SELECT)
+    .order("nombre");
   if (categoria) query = query.eq("id_categoria_producto", categoria);
   if (search) query = query.ilike("nombre", `%${search}%`);
   if (stockBajo) query = query.lte("stock_sistema", 5);
@@ -56,7 +59,8 @@ export async function crearProducto(input) {
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
+  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } =
+    input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
 
   const catId = idCategoria || categoriaId || null;
@@ -82,7 +86,8 @@ export async function actualizarProducto(id, input) {
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
+  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } =
+    input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
 
   const catId = idCategoria || categoriaId || null;
@@ -155,7 +160,9 @@ export async function listPromos() {
   const hoy = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("promos_eventos")
-    .select("id_evento, nombre, tipo, valor_descuento, fecha_inicio, fecha_fin");
+    .select(
+      "id_evento, nombre, tipo, valor_descuento, fecha_inicio, fecha_fin",
+    );
   if (error) throw new Error(error.message);
   return (data ?? [])
     .filter(
@@ -196,10 +203,12 @@ export async function crearVenta(input) {
       .eq("fecha_tasa", tasaInfo.hoy)
       .eq("moneda", input.moneda)
       .maybeSingle();
-      
+
     if (tasaError) throw new Error(tasaError.message);
     if (!tasaData) {
-      throw new Error(`No hay tasa de cambio registrada para ${input.moneda} en el día de hoy.`);
+      throw new Error(
+        `No hay tasa de cambio registrada para ${input.moneda} en el día de hoy.`,
+      );
     }
     id_tasa = tasaData.id_tasa;
   }
@@ -256,9 +265,7 @@ export async function crearVenta(input) {
     // Un alquiler no descuenta stock y siempre es una sola unidad por producto.
     const esAlquiler =
       (prod.categoria_producto?.nombre ?? "").toLowerCase() === "alquiler";
-    const cantidad = esAlquiler
-      ? 1
-      : Math.max(1, Number(item.cantidad) || 1);
+    const cantidad = esAlquiler ? 1 : Math.max(1, Number(item.cantidad) || 1);
     // RN-EXT-03: se permite vender aunque el stock sea 0; el stock queda en
     // negativo y se emite una alerta hasta que se registre una reposición.
     if (!esAlquiler && prod.stock_sistema - cantidad < 0) {
@@ -301,7 +308,7 @@ export async function crearVenta(input) {
         `Selecciona los días de asistencia para "${plan.nombre}".`,
       );
     }
-    detallePlanes.push({ plan, precio, dias });
+    detallePlanes.push({ plan, precio, dias, fechaInicio: item.fechaInicio });
   }
 
   // RN-RES-05: no exceder el cupo_maximo del plan por día de agenda.
@@ -347,7 +354,10 @@ export async function crearVenta(input) {
   const total = Math.max(0, subtotal - descuento);
 
   // Lógica de Deuda (RN-OPE-04)
-  const montoPagado = typeof input.montoPagado === "number" ? Math.max(0, input.montoPagado) : total;
+  const montoPagado =
+    typeof input.montoPagado === "number"
+      ? Math.max(0, input.montoPagado)
+      : total;
   const deudaGenerada = Math.max(0, total - montoPagado);
 
   if (deudaGenerada > 0 && !input.idMiembro) {
@@ -361,13 +371,15 @@ export async function crearVenta(input) {
       .select("deuda_acumulada")
       .eq("id_persona", input.idMiembro)
       .single();
-    
+
     if (pError) throw new Error(pError.message);
     const deudaActual = Number(persona.deuda_acumulada ?? 0);
     nuevaDeudaAcumulada = deudaActual + deudaGenerada;
 
     if (nuevaDeudaAcumulada > 10) {
-      throw new Error(`La transacción superaría el límite de deuda de $10 (Deuda actual: $${deudaActual.toFixed(2)}, A generar: $${deudaGenerada.toFixed(2)}).`);
+      throw new Error(
+        `La transacción superaría el límite de deuda de $10 (Deuda actual: $${deudaActual.toFixed(2)}, A generar: $${deudaGenerada.toFixed(2)}).`,
+      );
     }
   }
 
@@ -423,9 +435,15 @@ export async function crearVenta(input) {
       precio_unit_usd: dp.precio,
       tipo_item: "Plan",
     });
-    const inicio = new Date();
+
+    // Use user selected date or default to today
+    const inicio = dp.fechaInicio
+      ? new Date(dp.fechaInicio + "T12:00:00")
+      : new Date();
+
     const expira = new Date(inicio);
     expira.setDate(expira.getDate() + (dp.plan.duracion_dias ?? 0));
+
     const { data: suscripcion, error: subError } = await supabase
       .from("suscripciones")
       .insert({
@@ -457,7 +475,7 @@ export async function crearVenta(input) {
       .from("personas")
       .update({ deuda_acumulada: nuevaDeudaAcumulada })
       .eq("id_persona", input.idMiembro);
-    
+
     if (updateError) throw new Error(updateError.message);
   }
 
@@ -471,14 +489,20 @@ export async function crearVenta(input) {
   };
 }
 
-export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {}) {
+export async function listPagos({
+  search,
+  producto,
+  fechaDesde,
+  fechaHasta,
+} = {}) {
   const supabase = await createClient();
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
   let query = supabase
     .from("ventas")
-    .select(`
+    .select(
+      `
       id_venta,
       fecha_hora,
       total_usd,
@@ -496,7 +520,8 @@ export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {
         producto:productos ( id_producto, nombre ),
         plan:planes ( id_plan, nombre )
       )
-    `)
+    `,
+    )
     .order("fecha_hora", { ascending: false });
 
   if (fechaDesde) {
@@ -557,11 +582,10 @@ export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {
         (i) =>
           i.nombre.toLowerCase() === prodFilter ||
           String(i.idProducto) === producto ||
-          String(i.idPlan) === producto
-      )
+          String(i.idPlan) === producto,
+      ),
     );
   }
 
   return results;
 }
-
