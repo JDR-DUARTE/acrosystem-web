@@ -31,6 +31,7 @@ export default function DetalleProductoView({ productId }) {
   const [precio, setPrecio] = useState("");
   const [stockActual, setStockActual] = useState("");
   const [stockMinimo, setStockMinimo] = useState("5");
+  const [observaciones, setObservaciones] = useState("");
 
   // Populate data when editing an existing product
   useEffect(() => {
@@ -38,21 +39,22 @@ export default function DetalleProductoView({ productId }) {
       setNombre(producto.nombre || "");
       setDescripcion(producto.descripcion || "");
       setCategoriaId(
-        producto.categoria?.id ? String(producto.categoria.id) : ""
+        producto.categoria?.id ? String(producto.categoria.id) : "",
       );
       setPrecio(
         producto.precio !== undefined && producto.precio !== null
           ? String(producto.precio)
-          : ""
+          : "",
       );
       setStockActual(
         producto.stock !== undefined && producto.stock !== null
           ? String(producto.stock)
-          : ""
+          : "",
       );
       if (producto.stockMinimo !== undefined) {
         setStockMinimo(String(producto.stockMinimo));
       }
+      setObservaciones(""); // Reiniciar observaciones en edición
     }
   }, [producto]);
 
@@ -73,6 +75,7 @@ export default function DetalleProductoView({ productId }) {
         precio: precio !== "" ? Number(precio) : 0,
         stock: stockActual !== "" ? Number(stockActual) : 0,
         idCategoria: categoriaId ? Number(categoriaId) : null,
+        observaciones: observaciones.trim(),
       };
 
       if (productId) {
@@ -126,7 +129,10 @@ export default function DetalleProductoView({ productId }) {
         <div className="hidden md:grid md:grid-cols-2 md:gap-x-6 md:gap-y-5">
           {/* Fila 1 */}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="nombre-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="nombre-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               *Nombre
             </Label>
             <Input
@@ -140,7 +146,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="categoria-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="categoria-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               *Categoría
             </Label>
             <select
@@ -162,7 +171,10 @@ export default function DetalleProductoView({ productId }) {
 
           {/* Fila 2 */}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="descripcion-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="descripcion-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               *Descripción
             </Label>
             <Input
@@ -175,7 +187,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="precio-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="precio-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               Precio ($)
             </Label>
             <Input
@@ -192,7 +207,10 @@ export default function DetalleProductoView({ productId }) {
 
           {/* Fila 3 */}
           <div className="flex flex-col gap-2">
-            <Label htmlFor="stock-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="stock-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               Stock actual
             </Label>
             <Input
@@ -207,7 +225,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="stock-min-desk" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="stock-min-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
               Stock mínimo
             </Label>
             <Input
@@ -220,12 +241,32 @@ export default function DetalleProductoView({ productId }) {
               className={inputClass}
             />
           </div>
+
+          {/* Fila 4 */}
+          <div className="flex flex-col gap-2 md:col-span-2">
+            <Label
+              htmlFor="observaciones-desk"
+              className="text-base font-normal text-blanco-acro"
+            >
+              Observaciones del Ajuste (Opcional)
+            </Label>
+            <Input
+              id="observaciones-desk"
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              placeholder="Ej. Ingreso de mercancía nueva / Merma por daño..."
+              className={inputClass}
+            />
+          </div>
         </div>
 
         {/* Vista Móvil (1 columna apilada) */}
         <div className="flex flex-col gap-5 md:hidden">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="nombre-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="nombre-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Nombre
             </Label>
             <Input
@@ -239,7 +280,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="descripcion-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="descripcion-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Descripción
             </Label>
             <Input
@@ -252,7 +296,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="categoria-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="categoria-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Categoría
             </Label>
             <select
@@ -273,7 +320,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="precio-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="precio-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Precio
             </Label>
             <Input
@@ -289,7 +339,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="stock-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="stock-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Stock actual
             </Label>
             <Input
@@ -304,7 +357,10 @@ export default function DetalleProductoView({ productId }) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="stock-min-mob" className="text-base font-normal text-blanco-acro">
+            <Label
+              htmlFor="stock-min-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
               Stock minimo
             </Label>
             <Input
@@ -314,6 +370,22 @@ export default function DetalleProductoView({ productId }) {
               value={stockMinimo}
               onChange={(e) => setStockMinimo(e.target.value)}
               placeholder="5"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Label
+              htmlFor="observaciones-mob"
+              className="text-base font-normal text-blanco-acro"
+            >
+              Observaciones (Opcional)
+            </Label>
+            <Input
+              id="observaciones-mob"
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              placeholder="Ej. Ingreso / Merma..."
               className={inputClass}
             />
           </div>

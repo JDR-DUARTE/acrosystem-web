@@ -30,7 +30,10 @@ function mapProducto(row) {
 
 export async function listProductos({ search, categoria, stockBajo } = {}) {
   const supabase = await createClient();
-  let query = supabase.from("productos").select(PRODUCTO_SELECT).order("nombre");
+  let query = supabase
+    .from("productos")
+    .select(PRODUCTO_SELECT)
+    .order("nombre");
   if (categoria) query = query.eq("id_categoria_producto", categoria);
   if (search) query = query.ilike("nombre", `%${search}%`);
   if (stockBajo) query = query.lte("stock_sistema", 5);
@@ -56,10 +59,19 @@ export async function crearProducto(input) {
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
+  const {
+    nombre,
+    descripcion,
+    precio,
+    stock,
+    idCategoria,
+    categoriaId,
+    observaciones,
+  } = input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
 
   const catId = idCategoria || categoriaId || null;
+  const stockNum = Number(stock) || 0;
 
   const { data, error } = await supabase
     .from("productos")
@@ -67,13 +79,31 @@ export async function crearProducto(input) {
       nombre: nombre.trim(),
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
-      stock_sistema: Number(stock) || 0,
+      stock_sistema: stockNum,
       id_categoria_producto: catId ? Number(catId) : null,
     })
     .select(PRODUCTO_SELECT)
     .single();
 
   if (error) throw new Error(error.message);
+
+  if (stockNum > 0) {
+    const { error: movError } = await supabase
+      .from("movimientos_inventario")
+      .insert({
+        id_producto: data.id_producto,
+        id_empleado: employee.id_persona,
+        tipo_movimiento: "Entrada",
+        cantidad: stockNum,
+        fecha_hora: new Date().toISOString(),
+        observaciones:
+          observaciones?.trim() || "Stock inicial al crear el producto",
+      });
+    if (movError) {
+      console.error("Error al registrar movimiento inicial:", movError);
+    }
+  }
+
   return mapProducto(data);
 }
 
@@ -82,10 +112,29 @@ export async function actualizarProducto(id, input) {
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
-  const { nombre, descripcion, precio, stock, idCategoria, categoriaId } = input;
+  const {
+    nombre,
+    descripcion,
+    precio,
+    stock,
+    idCategoria,
+    categoriaId,
+    observaciones,
+  } = input;
   if (!nombre || !nombre.trim()) throw new Error("El nombre es obligatorio.");
 
+  const { data: currentProduct, error: fetchError } = await supabase
+    .from("productos")
+    .select("stock_sistema")
+    .eq("id_producto", id)
+    .single();
+
+  if (fetchError) throw new Error("Producto no encontrado");
+
   const catId = idCategoria || categoriaId || null;
+  const newStock = Number(stock) || 0;
+  const oldStock = Number(currentProduct.stock_sistema) || 0;
+  const stockDiff = newStock - oldStock;
 
   const { data, error } = await supabase
     .from("productos")
@@ -93,7 +142,7 @@ export async function actualizarProducto(id, input) {
       nombre: nombre.trim(),
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
-      stock_sistema: Number(stock) || 0,
+      stock_sistema: newStock,
       id_categoria_producto: catId ? Number(catId) : null,
     })
     .eq("id_producto", id)
@@ -101,6 +150,26 @@ export async function actualizarProducto(id, input) {
     .single();
 
   if (error) throw new Error(error.message);
+
+  if (stockDiff !== 0) {
+    const tipoMovimiento = stockDiff > 0 ? "Entrada" : "Merma";
+    const { error: movError } = await supabase
+      .from("movimientos_inventario")
+      .insert({
+        id_producto: id,
+        id_empleado: employee.id_persona,
+        tipo_movimiento: tipoMovimiento,
+        cantidad: stockDiff,
+        fecha_hora: new Date().toISOString(),
+        observaciones:
+          observaciones?.trim() ||
+          "Ajuste manual de stock desde el detalle del producto",
+      });
+    if (movError) {
+      console.error("Error registrando movimiento de inventario:", movError);
+    }
+  }
+
   return mapProducto(data);
 }
 
@@ -155,7 +224,9 @@ export async function listPromos() {
   const hoy = new Date().toISOString().slice(0, 10);
   const { data, error } = await supabase
     .from("promos_eventos")
-    .select("id_evento, nombre, tipo, valor_descuento, fecha_inicio, fecha_fin");
+    .select(
+      "id_evento, nombre, tipo, valor_descuento, fecha_inicio, fecha_fin",
+    );
   if (error) throw new Error(error.message);
   return (data ?? [])
     .filter(
@@ -196,10 +267,12 @@ export async function crearVenta(input) {
       .eq("fecha_tasa", tasaInfo.hoy)
       .eq("moneda", input.moneda)
       .maybeSingle();
-      
+
     if (tasaError) throw new Error(tasaError.message);
     if (!tasaData) {
-      throw new Error(`No hay tasa de cambio registrada para ${input.moneda} en el día de hoy.`);
+      throw new Error(
+        `No hay tasa de cambio registrada para ${input.moneda} en el día de hoy.`,
+      );
     }
     id_tasa = tasaData.id_tasa;
   }
@@ -256,9 +329,7 @@ export async function crearVenta(input) {
     // Un alquiler no descuenta stock y siempre es una sola unidad por producto.
     const esAlquiler =
       (prod.categoria_producto?.nombre ?? "").toLowerCase() === "alquiler";
-    const cantidad = esAlquiler
-      ? 1
-      : Math.max(1, Number(item.cantidad) || 1);
+    const cantidad = esAlquiler ? 1 : Math.max(1, Number(item.cantidad) || 1);
     // RN-EXT-03: se permite vender aunque el stock sea 0; el stock queda en
     // negativo y se emite una alerta hasta que se registre una reposición.
     if (!esAlquiler && prod.stock_sistema - cantidad < 0) {
@@ -347,7 +418,10 @@ export async function crearVenta(input) {
   const total = Math.max(0, subtotal - descuento);
 
   // Lógica de Deuda (RN-OPE-04)
-  const montoPagado = typeof input.montoPagado === "number" ? Math.max(0, input.montoPagado) : total;
+  const montoPagado =
+    typeof input.montoPagado === "number"
+      ? Math.max(0, input.montoPagado)
+      : total;
   const deudaGenerada = Math.max(0, total - montoPagado);
 
   if (deudaGenerada > 0 && !input.idMiembro) {
@@ -361,13 +435,15 @@ export async function crearVenta(input) {
       .select("deuda_acumulada")
       .eq("id_persona", input.idMiembro)
       .single();
-    
+
     if (pError) throw new Error(pError.message);
     const deudaActual = Number(persona.deuda_acumulada ?? 0);
     nuevaDeudaAcumulada = deudaActual + deudaGenerada;
 
     if (nuevaDeudaAcumulada > 10) {
-      throw new Error(`La transacción superaría el límite de deuda de $10 (Deuda actual: $${deudaActual.toFixed(2)}, A generar: $${deudaGenerada.toFixed(2)}).`);
+      throw new Error(
+        `La transacción superaría el límite de deuda de $10 (Deuda actual: $${deudaActual.toFixed(2)}, A generar: $${deudaGenerada.toFixed(2)}).`,
+      );
     }
   }
 
@@ -409,35 +485,45 @@ export async function crearVenta(input) {
         .update({ stock_sistema: d.prod.stock_sistema - d.cantidad })
         .eq("id_producto", d.prod.id_producto);
       if (stockError) {
-        throw new Error(`Error actualizando stock de producto: ${stockError.message}`);
+        throw new Error(
+          `Error actualizando stock de producto: ${stockError.message}`,
+        );
       }
 
-      const { error: movError } = await supabase.from("movimientos_inventario").insert({
-        id_producto: d.prod.id_producto,
-        id_empleado: employee.id_persona,
-        tipo_movimiento: "Venta",
-        cantidad: -d.cantidad,
-        id_venta_relacionada: venta.id_venta,
-      });
+      const { error: movError } = await supabase
+        .from("movimientos_inventario")
+        .insert({
+          id_producto: d.prod.id_producto,
+          id_empleado: employee.id_persona,
+          tipo_movimiento: "Venta",
+          cantidad: -d.cantidad,
+          id_venta_relacionada: venta.id_venta,
+        });
       if (movError) {
-        throw new Error(`Error registrando movimiento de inventario: ${movError.message}`);
+        throw new Error(
+          `Error registrando movimiento de inventario: ${movError.message}`,
+        );
       }
     }
   }
 
   // Detalle de planes + creación de la suscripción del miembro.
   for (const dp of detallePlanes) {
-    const { error: detPlanError } = await supabase.from("detalle_venta").insert({
-      id_venta: venta.id_venta,
-      id_plan: dp.plan.id_plan,
-      cantidad: 1,
-      precio_unit_usd: dp.precio,
-      tipo_item: "Plan",
-    });
+    const { error: detPlanError } = await supabase
+      .from("detalle_venta")
+      .insert({
+        id_venta: venta.id_venta,
+        id_plan: dp.plan.id_plan,
+        cantidad: 1,
+        precio_unit_usd: dp.precio,
+        tipo_item: "Plan",
+      });
     if (detPlanError) {
-      throw new Error(`Error guardando detalle de plan: ${detPlanError.message}`);
+      throw new Error(
+        `Error guardando detalle de plan: ${detPlanError.message}`,
+      );
     }
-    
+
     // Use user selected date or default to today
     const hoyStr = new Date().toISOString().slice(0, 10);
     const inicioStr = dp.fechaInicio || hoyStr;
@@ -445,7 +531,7 @@ export async function crearVenta(input) {
     const expira = new Date(inicio);
     expira.setDate(expira.getDate() + (dp.plan.duracion_dias ?? 0));
     const expiraStr = expira.toISOString().slice(0, 10);
-    
+
     const { data: suscripcion, error: subError } = await supabase
       .from("suscripciones")
       .insert({
@@ -461,13 +547,15 @@ export async function crearVenta(input) {
     if (subError) throw new Error(subError.message);
 
     if (dp.dias.length > 0 && suscripcion) {
-      const { error: diasError } = await supabase.from("suscripcion_dias").insert(
-        dp.dias.map((dia) => ({
-          id_suscripcion: suscripcion.id_suscripcion,
-          dia_semana: dia,
-          tipo_dia: "Fijo",
-        })),
-      );
+      const { error: diasError } = await supabase
+        .from("suscripcion_dias")
+        .insert(
+          dp.dias.map((dia) => ({
+            id_suscripcion: suscripcion.id_suscripcion,
+            dia_semana: dia,
+            tipo_dia: "Fijo",
+          })),
+        );
       if (diasError) {
         throw new Error(`Error guardando días de agenda: ${diasError.message}`);
       }
@@ -480,7 +568,7 @@ export async function crearVenta(input) {
       .from("personas")
       .update({ deuda_acumulada: nuevaDeudaAcumulada })
       .eq("id_persona", input.idMiembro);
-    
+
     if (updateError) throw new Error(updateError.message);
   }
 
@@ -494,14 +582,20 @@ export async function crearVenta(input) {
   };
 }
 
-export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {}) {
+export async function listPagos({
+  search,
+  producto,
+  fechaDesde,
+  fechaHasta,
+} = {}) {
   const supabase = await createClient();
   const { employee } = await getCurrentEmployee();
   if (!employee) throw new Error("No autorizado.");
 
   let query = supabase
     .from("ventas")
-    .select(`
+    .select(
+      `
       id_venta,
       fecha_hora,
       total_usd,
@@ -519,7 +613,8 @@ export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {
         producto:productos ( id_producto, nombre ),
         plan:planes ( id_plan, nombre )
       )
-    `)
+    `,
+    )
     .order("fecha_hora", { ascending: false });
 
   if (fechaDesde) {
@@ -580,11 +675,10 @@ export async function listPagos({ search, producto, fechaDesde, fechaHasta } = {
         (i) =>
           i.nombre.toLowerCase() === prodFilter ||
           String(i.idProducto) === producto ||
-          String(i.idPlan) === producto
-      )
+          String(i.idPlan) === producto,
+      ),
     );
   }
 
   return results;
 }
-
