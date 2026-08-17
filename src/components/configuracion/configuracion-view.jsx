@@ -260,7 +260,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Agenda</div>
                   <div className="col-span-1 text-right pr-4">Precio</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -411,7 +411,7 @@ export default function ConfiguracionView() {
                     Valor/Descuento
                   </div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -533,7 +533,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Teléfono</div>
                   <div className="col-span-1 text-right pr-4">Rol</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <select
                       value={personalSelectedId}

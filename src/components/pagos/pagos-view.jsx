@@ -98,14 +98,15 @@ export default function PagosView() {
         {/* Search Bar */}
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
-          <Input
+          <input
+            type="text"
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
             placeholder="Buscar..."
-            className="h-12 w-full rounded-xl bg-gris-claro-acro border-none pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted focus-visible:ring-1 focus-visible:ring-amarillo-acro"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro pl-11 pr-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
           />
         </div>
 
