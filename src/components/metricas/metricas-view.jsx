@@ -114,7 +114,7 @@ export default function MetricasView() {
           </h2>
 
           {/* Filtros de Rango de Fechas (Desde / Hasta) */}
-          <div className="mb-4 flex flex-wrap gap-4">
+          <div className="mb-4 flex flex-nowrap gap-2 sm:gap-4">
             <input
               type="text"
               placeholder="Desde"
@@ -124,7 +124,7 @@ export default function MetricasView() {
               onBlur={(e) => {
                 if (!e.target.value) e.target.type = "text";
               }}
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none w-32"
+              className="rounded-full bg-gris-claro-acro px-3 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none min-w-0 w-full sm:w-32"
             />
             <input
               type="text"
@@ -135,7 +135,7 @@ export default function MetricasView() {
               onBlur={(e) => {
                 if (!e.target.value) e.target.type = "text";
               }}
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none w-32"
+              className="rounded-full bg-gris-claro-acro px-3 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none min-w-0 w-full sm:w-32"
             />
             <button
               onClick={() =>
@@ -144,48 +144,54 @@ export default function MetricasView() {
                   hasta: ingresosHasta,
                 })
               }
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
+              className="shrink-0 rounded-full bg-gris-claro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
             >
               Aplicar
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
-              <div className="col-span-4 sm:col-span-4">Producto</div>
-              <div className="col-span-2 text-center sm:col-span-2">Cant.</div>
-              <div className="col-span-3 text-center sm:col-span-3">Fecha</div>
-              <div className="col-span-3 text-right sm:col-span-3">Monto</div>
-            </div>
-
-            {/* Table Rows */}
-            <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
-              {ingresosFiltrados.length === 0 ? (
-                <div className="px-6 py-4 text-sm text-acro-muted">
-                  No hay registros de ingresos para el rango seleccionado.
+          <div className="overflow-x-auto rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
+            <div className="min-w-[500px]">
+              {/* Table Header */}
+              <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
+                <div className="col-span-4 sm:col-span-4">Producto</div>
+                <div className="col-span-2 text-center sm:col-span-2">
+                  Cant.
                 </div>
-              ) : (
-                ingresosFiltrados.map((item) => (
-                  <div
-                    key={item.id}
-                    className="grid grid-cols-12 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 sm:px-6"
-                  >
-                    <div className="col-span-4 pr-2 font-medium text-blanco-acro truncate sm:col-span-4">
-                      {item.movimiento}
-                    </div>
-                    <div className="col-span-2 text-center text-acro-muted font-mono text-xs sm:col-span-2 sm:text-sm">
-                      {item.cantidad}
-                    </div>
-                    <div className="col-span-3 text-center text-acro-muted font-mono text-xs sm:col-span-3 sm:text-sm">
-                      {item.fecha}
-                    </div>
-                    <div className="col-span-3 text-right font-semibold text-blanco-acro sm:col-span-3">
-                      {item.monto}
-                    </div>
+                <div className="col-span-3 text-center sm:col-span-3">
+                  Fecha
+                </div>
+                <div className="col-span-3 text-right sm:col-span-3">Monto</div>
+              </div>
+
+              {/* Table Rows */}
+              <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
+                {ingresosFiltrados.length === 0 ? (
+                  <div className="px-6 py-4 text-sm text-acro-muted">
+                    No hay registros de ingresos para el rango seleccionado.
                   </div>
-                ))
-              )}
+                ) : (
+                  ingresosFiltrados.map((item) => (
+                    <div
+                      key={item.id}
+                      className="grid grid-cols-12 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 sm:px-6"
+                    >
+                      <div className="col-span-4 pr-2 font-medium text-blanco-acro truncate sm:col-span-4">
+                        {item.movimiento}
+                      </div>
+                      <div className="col-span-2 text-center text-acro-muted font-mono text-xs sm:col-span-2 sm:text-sm">
+                        {item.cantidad}
+                      </div>
+                      <div className="col-span-3 text-center text-acro-muted font-mono text-xs sm:col-span-3 sm:text-sm">
+                        {item.fecha}
+                      </div>
+                      <div className="col-span-3 text-right font-semibold text-blanco-acro sm:col-span-3">
+                        {item.monto}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -197,7 +203,7 @@ export default function MetricasView() {
             Reporte de Stock
           </h2>
 
-          <div className="mb-4 flex flex-wrap gap-4">
+          <div className="mb-4 flex flex-nowrap gap-2 sm:gap-4">
             <input
               type="text"
               placeholder="Desde"
@@ -207,7 +213,7 @@ export default function MetricasView() {
               onBlur={(e) => {
                 if (!e.target.value) e.target.type = "text";
               }}
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none w-32"
+              className="rounded-full bg-gris-claro-acro px-3 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none min-w-0 w-full sm:w-32"
             />
             <input
               type="text"
@@ -218,52 +224,56 @@ export default function MetricasView() {
               onBlur={(e) => {
                 if (!e.target.value) e.target.type = "text";
               }}
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none w-32"
+              className="rounded-full bg-gris-claro-acro px-3 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro border-none min-w-0 w-full sm:w-32"
             />
             <button
               onClick={() =>
                 setStockFiltroApli({ desde: stockDesde, hasta: stockHasta })
               }
-              className="rounded-full bg-gris-oscuro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
+              className="shrink-0 rounded-full bg-gris-claro-acro px-4 py-1.5 text-xs font-medium text-blanco-acro transition-colors focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
             >
               Aplicar
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
-              <div className="col-span-5 sm:col-span-6">Movimiento</div>
-              <div className="col-span-4 text-center sm:col-span-3">Fecha</div>
-              <div className="col-span-3 text-right sm:col-span-3">
-                Cantidad
-              </div>
-            </div>
-
-            {/* Table Rows */}
-            <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
-              {stockFiltrado.length === 0 ? (
-                <div className="px-6 py-4 text-sm text-acro-muted">
-                  No hay movimientos de stock para el rango seleccionado.
+          <div className="overflow-x-auto rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
+            <div className="min-w-[500px]">
+              {/* Table Header */}
+              <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
+                <div className="col-span-5 sm:col-span-6">Movimiento</div>
+                <div className="col-span-4 text-center sm:col-span-3">
+                  Fecha
                 </div>
-              ) : (
-                stockFiltrado.map((item) => (
-                  <div
-                    key={item.id}
-                    className="grid grid-cols-12 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 sm:px-6"
-                  >
-                    <div className="col-span-5 pr-2 font-medium text-blanco-acro truncate sm:col-span-6">
-                      {item.movimiento}
-                    </div>
-                    <div className="col-span-4 text-center text-acro-muted font-mono text-xs sm:col-span-3 sm:text-sm">
-                      {item.fecha}
-                    </div>
-                    <div className="col-span-3 text-right font-semibold text-blanco-acro sm:col-span-3">
-                      {item.monto}
-                    </div>
+                <div className="col-span-3 text-right sm:col-span-3">
+                  Cantidad
+                </div>
+              </div>
+
+              {/* Table Rows */}
+              <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
+                {stockFiltrado.length === 0 ? (
+                  <div className="px-6 py-4 text-sm text-acro-muted">
+                    No hay movimientos de stock para el rango seleccionado.
                   </div>
-                ))
-              )}
+                ) : (
+                  stockFiltrado.map((item) => (
+                    <div
+                      key={item.id}
+                      className="grid grid-cols-12 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 sm:px-6"
+                    >
+                      <div className="col-span-5 pr-2 font-medium text-blanco-acro truncate sm:col-span-6">
+                        {item.movimiento}
+                      </div>
+                      <div className="col-span-4 text-center text-acro-muted font-mono text-xs sm:col-span-3 sm:text-sm">
+                        {item.fecha}
+                      </div>
+                      <div className="col-span-3 text-right font-semibold text-blanco-acro sm:col-span-3">
+                        {item.monto}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
         </div>
