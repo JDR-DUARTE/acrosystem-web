@@ -618,7 +618,7 @@ export default function TiendaWizard({
                             onIncrement={() => setQty(i.key, i.cantidad + 1)}
                           />
                         </div>
-                      ) : i.kind=== "plan" ? (
+                      ) : i.kind === "plan" ? (
                         <div className="relative w-full">
                           <input
                             type="date"
@@ -659,9 +659,11 @@ export default function TiendaWizard({
                             </svg>
                           </div>
                         </div>
-                        ) : (
+                      ) : (
                         <div className="flex w-full items-center h-9">
-                           <span className="text-sm font-medium text-acro-muted">1 unidad</span>
+                          <span className="text-sm font-medium text-acro-muted">
+                            1 unidad
+                          </span>
                         </div>
                       )}
                     </div>
