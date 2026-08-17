@@ -30,3 +30,18 @@ export function useAddConfiguracion() {
     },
   });
 }
+
+export function useDeleteConfiguracion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload) =>
+      fetchJson("/api/configuracion", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["configuracion"] });
+    },
+  });
+}

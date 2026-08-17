@@ -5,9 +5,11 @@ import { useState } from "react";
 import {
   useConfiguracion,
   useAddConfiguracion,
+  useDeleteConfiguracion,
 } from "@/hooks/use-configuracion";
 import { useMiembros } from "@/hooks/use-miembros";
-import { Loader2, AlertCircle, Save } from "lucide-react";
+import { Loader2, AlertCircle, Save, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 /**
  * Componente principal para la vista de Configuración del sistema Acrosystem.
@@ -17,6 +19,7 @@ export default function ConfiguracionView() {
   // Carga de datos generales de configuración y mutación para agregar registros
   const { data, isLoading, isError, error } = useConfiguracion();
   const { mutateAsync: addConfig, isPending: isAdding } = useAddConfiguracion();
+  const { mutateAsync: deleteConfig } = useDeleteConfiguracion();
 
   // Estado del formulario para la creación de Planes
   const [planNombre, setPlanNombre] = useState("");
@@ -37,6 +40,19 @@ export default function ConfiguracionView() {
   // Estado del formulario para la asignación de Personal
   const [personalSelectedId, setPersonalSelectedId] = useState("");
   const [personalRolId, setPersonalRolId] = useState("");
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState("");
+  const [pendingAction, setPendingAction] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+
+  const requirePassword = (actionFn) => {
+    setPendingAction(() => actionFn);
+    setPassword("");
+    setPasswordError("");
+    setShowPasswordModal(true);
+  };
 
   // Consulta de miembros registrados para filtrar a aquellos con categoría 'empleado'
   const { data: miembros = [], isLoading: isLoadingMiembros } = useMiembros();
@@ -142,6 +158,15 @@ export default function ConfiguracionView() {
     }
   };
 
+  const handleDeleteAction = async (type, id) => {
+    try {
+      await deleteConfig({ type, id });
+      toast.success("Elemento eliminado exitosamente.");
+    } catch (e) {
+      toast.error(e.message || "Error al eliminar el elemento.");
+    }
+  };
+
   // Date formatter
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -165,7 +190,7 @@ export default function ConfiguracionView() {
           </h2>
           <div className="overflow-hidden rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
             {/* Table Header */}
-            <div className="grid grid-cols-7 gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
               <div className="col-span-1">Nombre</div>
               <div className="col-span-1 text-center">Pases</div>
               <div className="col-span-1 text-center">Duración</div>
@@ -173,6 +198,7 @@ export default function ConfiguracionView() {
               <div className="col-span-1 text-center">Cupo máximo</div>
               <div className="col-span-1 text-center">Agenda</div>
               <div className="col-span-1 text-right pr-4">Precio</div>
+              <div className="col-span-1"></div>
             </div>
 
             {/* Table Rows */}
@@ -180,7 +206,7 @@ export default function ConfiguracionView() {
               {planes.map((p) => (
                 <div
                   key={p.id_plan}
-                  className="grid grid-cols-7 gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10"
+                  className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 group"
                 >
                   <div className="col-span-1 font-medium text-blanco-acro truncate">
                     {p.nombre}
@@ -202,6 +228,18 @@ export default function ConfiguracionView() {
                   </div>
                   <div className="col-span-1 text-right font-medium text-blanco-acro pr-4">
                     {p.precio_usd}
+                  </div>
+                  <div className="col-span-1 flex justify-end pr-2">
+                    <button
+                      onClick={() =>
+                        requirePassword(() =>
+                          handleDeleteAction("PLAN", p.id_plan),
+                        )
+                      }
+                      className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -289,7 +327,7 @@ export default function ConfiguracionView() {
                 </div>
 
                 <button
-                  onClick={handleAddPlan}
+                  onClick={() => requirePassword(handleAddPlan)}
                   disabled={isAdding}
                   className="absolute bottom-0 right-4 rounded-xl bg-amarillo-acro px-6 py-2 text-sm font-bold text-negro-fondo-acro transition-transform hover:scale-[1.02] disabled:opacity-50"
                 >
@@ -307,12 +345,13 @@ export default function ConfiguracionView() {
           </h2>
           <div className="overflow-hidden rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
             {/* Table Header */}
-            <div className="grid grid-cols-5 gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
               <div className="col-span-1">Nombre</div>
               <div className="col-span-1 text-center">Tipo</div>
               <div className="col-span-1 text-center">Desde</div>
               <div className="col-span-1 text-center">Hasta</div>
               <div className="col-span-1 text-right pr-4">Valor/Descuento</div>
+              <div className="col-span-1"></div>
             </div>
 
             {/* Table Rows */}
@@ -320,7 +359,7 @@ export default function ConfiguracionView() {
               {promos.map((pr) => (
                 <div
                   key={pr.id_evento}
-                  className="grid grid-cols-5 gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10"
+                  className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 group"
                 >
                   <div className="col-span-1 font-medium text-blanco-acro truncate">
                     {pr.nombre}
@@ -336,6 +375,18 @@ export default function ConfiguracionView() {
                   </div>
                   <div className="col-span-1 text-right font-medium text-blanco-acro pr-4">
                     {pr.valor_descuento}
+                  </div>
+                  <div className="col-span-1 flex justify-end pr-2">
+                    <button
+                      onClick={() =>
+                        requirePassword(() =>
+                          handleDeleteAction("PROMO", pr.id_evento),
+                        )
+                      }
+                      className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -401,7 +452,7 @@ export default function ConfiguracionView() {
                 </div>
 
                 <button
-                  onClick={handleAddPromo}
+                  onClick={() => requirePassword(handleAddPromo)}
                   disabled={isAdding}
                   className="absolute bottom-0 right-4 rounded-xl bg-amarillo-acro px-6 py-2 text-sm font-bold text-negro-fondo-acro transition-transform hover:scale-[1.02] disabled:opacity-50"
                 >
@@ -419,30 +470,50 @@ export default function ConfiguracionView() {
           </h2>
           <div className="overflow-hidden rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
             {/* Table Header */}
-            <div className="grid grid-cols-3 gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
+            <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 px-4 py-3 text-xs font-semibold text-acro-muted">
               <div className="col-span-1">Nombre</div>
               <div className="col-span-1 text-center">Teléfono</div>
               <div className="col-span-1 text-right pr-4">Rol</div>
+              <div className="col-span-1"></div>
             </div>
 
             {/* Table Rows */}
             <div className="divide-y divide-white/5 border-b border-gris-claro-acro/20">
-              {personal.map((emp) => (
-                <div
-                  key={emp.id_persona}
-                  className="grid grid-cols-3 gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10"
-                >
-                  <div className="col-span-1 font-medium text-blanco-acro truncate">
-                    {emp.personas?.nombre_completo || "Desconocido"}
+              {personal.map((emp) => {
+                const memberInfo = miembros.find(
+                  (m) => m.id === emp.id_persona,
+                );
+                const telefono =
+                  memberInfo?.telefono || emp.personas?.telefono || "-";
+                return (
+                  <div
+                    key={emp.id_persona}
+                    className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center px-4 py-3.5 text-sm transition-colors hover:bg-gris-claro-acro/10 group"
+                  >
+                    <div className="col-span-1 font-medium text-blanco-acro truncate">
+                      {emp.personas?.nombre_completo || "Desconocido"}
+                    </div>
+                    <div className="col-span-1 text-center text-acro-muted truncate">
+                      {telefono}
+                    </div>
+                    <div className="col-span-1 text-right text-acro-muted pr-4 truncate">
+                      {emp.roles?.nombre || "Sin Rol"}
+                    </div>
+                    <div className="col-span-1 flex justify-end pr-2">
+                      <button
+                        onClick={() =>
+                          requirePassword(() =>
+                            handleDeleteAction("PERSONAL", emp.id_persona),
+                          )
+                        }
+                        className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="col-span-1 text-center text-acro-muted truncate">
-                    {emp.personas?.telefono || "-"}
-                  </div>
-                  <div className="col-span-1 text-right text-acro-muted pr-4 truncate">
-                    {emp.roles?.nombre || "Sin Rol"}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Agregar Personal */}
@@ -499,7 +570,7 @@ export default function ConfiguracionView() {
                 </div>
 
                 <button
-                  onClick={handleAddPersonal}
+                  onClick={() => requirePassword(handleAddPersonal)}
                   disabled={isAdding}
                   className="absolute bottom-0 right-4 rounded-xl bg-amarillo-acro px-6 py-2 text-sm font-bold text-negro-fondo-acro transition-transform hover:scale-[1.02] disabled:opacity-50"
                 >
@@ -511,10 +582,77 @@ export default function ConfiguracionView() {
         </div>
       </div>
 
-      {/* Floating Action Button */}
-      <button className="fixed bottom-8 right-8 z-50 flex size-14 items-center justify-center rounded-2xl bg-amarillo-acro text-negro-fondo-acro shadow-2xl transition-transform hover:scale-105 active:scale-95">
-        <Save className="size-6" />
-      </button>
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-6 shadow-xl">
+            <h3 className="mb-2 text-lg font-bold text-blanco-acro">
+              Autenticación requerida
+            </h3>
+            <p className="mb-4 text-sm text-acro-muted">
+              Por favor ingresa tu contraseña para confirmar esta acción.
+            </p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Contraseña"
+              className="w-full bg-gris-oscuro-acro text-blanco-acro rounded-lg px-3 py-2 text-sm border-none focus:ring-1 focus:ring-amarillo-acro outline-none mb-2"
+              autoFocus
+            />
+            {passwordError && (
+              <p className="mb-4 text-xs font-semibold text-red-500">
+                {passwordError}
+              </p>
+            )}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowPasswordModal(false)}
+                className="rounded-xl bg-[#4E4E4E] px-4 py-2 text-sm font-medium text-blanco-acro transition-colors hover:bg-gris-claro-acro/30"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={isVerifying}
+                onClick={async () => {
+                  if (!password) {
+                    setPasswordError("Ingresa tu contraseña.");
+                    return;
+                  }
+                  setIsVerifying(true);
+                  setPasswordError("");
+                  try {
+                    const res = await fetch("/api/auth/verify-password", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ password }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok)
+                      throw new Error(data.error || "Error de autenticación.");
+
+                    setShowPasswordModal(false);
+                    if (pendingAction) await pendingAction();
+                  } catch (err) {
+                    setPasswordError(err.message);
+                  } finally {
+                    setIsVerifying(false);
+                  }
+                }}
+                className="flex items-center justify-center rounded-xl bg-amarillo-acro px-4 py-2 text-sm font-bold text-negro-fondo-acro transition-transform hover:scale-[1.02] disabled:opacity-50"
+              >
+                {isVerifying ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Confirmar"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
