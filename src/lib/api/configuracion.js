@@ -89,3 +89,30 @@ export async function addPersonal(personalData) {
   if (error) throw new Error(error.message);
   return data[0];
 }
+
+export async function deletePlan(id) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("planes").delete().eq("id_plan", id);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+export async function deletePromo(id) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("promos_eventos")
+    .delete()
+    .eq("id_evento", id);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+export async function deletePersonal(id) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("empleados")
+    .delete()
+    .eq("id_persona", id);
+  if (error) throw new Error(error.message);
+  return true;
+}
