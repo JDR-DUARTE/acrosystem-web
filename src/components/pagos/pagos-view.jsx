@@ -105,7 +105,7 @@ export default function PagosView() {
               setCurrentPage(1);
             }}
             placeholder="Buscar..."
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro border-none pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted focus-visible:ring-1 focus-visible:ring-amarillo-acro"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro border-none pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted focus-visible:ring-1 focus-visible:ring-amarillo-acro"
           />
         </div>
 
@@ -117,7 +117,7 @@ export default function PagosView() {
               setProducto(e.target.value);
               setCurrentPage(1);
             }}
-            className="h-12 w-full appearance-none rounded-xl bg-gris-oscuro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
+            className="h-12 w-full appearance-none rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
           >
             <option
               value="ALL"
@@ -148,8 +148,9 @@ export default function PagosView() {
               setCurrentPage(1);
             }}
             placeholder="Desde"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
+          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
 
         {/* Fecha Hasta */}
@@ -162,8 +163,9 @@ export default function PagosView() {
               setCurrentPage(1);
             }}
             placeholder="Hasta"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
+          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
       </div>
 

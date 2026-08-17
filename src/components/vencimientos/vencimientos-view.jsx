@@ -3,12 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  Search,
-  AlertCircle,
-  CalendarX,
-  CalendarClock,
-} from "lucide-react";
+import { Search, AlertCircle, CalendarX, CalendarClock } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,7 +40,7 @@ function formatDate(value) {
 // Permite contactarlos rápidamente vía WhatsApp.
 export default function VencimientosView() {
   const router = useRouter();
-  
+
   // Estado para saber qué pestaña está activa (Próximos o Expirados)
   const [tab, setTab] = useState("proximos");
   // Estado para la barra de búsqueda
@@ -89,7 +84,6 @@ export default function VencimientosView() {
 
       {/* Contenedores de Búsqueda y Pestañas */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
-        
         {/* Barra de Búsqueda */}
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
@@ -97,10 +91,10 @@ export default function VencimientosView() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre o cédula"
-            className="h-12 bg-gris-oscuro-acro pl-11"
+            className="h-12 bg-gris-claro-acro pl-11"
           />
         </div>
-        
+
         {/* Pestañas (Tabs): Botones para cambiar entre Próximos y Expirados */}
         <div className="grid w-full max-w-xs grid-cols-2 gap-2">
           {TABS.map((t) => (
@@ -113,7 +107,7 @@ export default function VencimientosView() {
                 "rounded-xl py-2.5 text-base font-medium transition-colors",
                 tab === t.id
                   ? "bg-amarillo-acro text-negro-fondo-acro"
-                  : "bg-gris-oscuro-acro text-blanco-acro hover:bg-gris-claro-acro/10",
+                  : "bg-gris-claro-acro text-blanco-acro hover:bg-gris-claro-acro/10",
               )}
             >
               {t.label}
@@ -166,11 +160,11 @@ export default function VencimientosView() {
                   tabIndex={0}
                   onClick={() => router.push(`/miembros/${v.miembroId}`)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") router.push(`/miembros/${v.miembroId}`);
+                    if (e.key === "Enter")
+                      router.push(`/miembros/${v.miembroId}`);
                   }}
                   className="flex items-center justify-between gap-3 rounded-xl bg-negro-fondo-acro px-4 py-3 transition-colors hover:bg-gris-claro-acro/10"
                 >
-                  
                   {/* Datos del miembro */}
                   <div className="min-w-0">
                     <p className="truncate font-medium text-blanco-acro">
@@ -180,7 +174,7 @@ export default function VencimientosView() {
                       {fechaLabel}: {formatDate(v.fechaExpiracion)}
                     </p>
                   </div>
-                  
+
                   {/* Botón de Whatsapp Dinámico */}
                   {buildWhatsappUrl(v.telefono, buildMensaje(v)) ? (
                     // Si TIENE teléfono y la URL es válida, mostramos un link (a) real

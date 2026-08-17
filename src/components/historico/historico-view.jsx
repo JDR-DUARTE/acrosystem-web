@@ -15,7 +15,14 @@ import {
 
 import { useHistorico } from "@/hooks/use-historico";
 
-const PLAN_OPTIONS = ["Plan Mensual", "Pase Diario", "Plan 10", "Plan Niños"];
+const PLAN_OPTIONS = [
+  "Básico",
+  "Acrofobia",
+  "Atleta",
+  "Estudiante",
+  "Pases",
+  "Plan Pareja",
+];
 
 // Componente HistoricoView
 // Muestra una tabla con el registro histórico de los check-ins (asistencias) al gimnasio.
@@ -59,7 +66,7 @@ export default function HistoricoView() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre..."
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro pl-11 pr-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro pl-11 pr-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
           />
         </div>
 
@@ -68,7 +75,7 @@ export default function HistoricoView() {
           <select
             value={plan}
             onChange={(e) => setPlan(e.target.value)}
-            className="h-12 w-full appearance-none rounded-xl bg-gris-oscuro-acro pl-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
+            className="h-12 w-full appearance-none rounded-xl bg-gris-claro-acro pl-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer"
           >
             <option
               value="ALL"
@@ -96,8 +103,9 @@ export default function HistoricoView() {
             value={fechaDesde}
             onChange={(e) => setFechaDesde(e.target.value)}
             placeholder="Desde"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
+          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
 
         {/* Filtro Fecha Hasta */}
@@ -107,8 +115,9 @@ export default function HistoricoView() {
             value={fechaHasta}
             onChange={(e) => setFechaHasta(e.target.value)}
             placeholder="Hasta"
-            className="h-12 w-full rounded-xl bg-gris-oscuro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
+          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
       </div>
 
