@@ -237,7 +237,7 @@ export default function ConfiguracionView() {
                             handleDeleteAction("PLAN", p.id_plan),
                           )
                         }
-                        className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-acro-muted hover:text-red-500 opacity-80 group-hover:opacity-100 transition-opacity"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -260,7 +260,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Agenda</div>
                   <div className="col-span-1 text-right pr-4">Precio</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -388,7 +388,7 @@ export default function ConfiguracionView() {
                             handleDeleteAction("PROMO", pr.id_evento),
                           )
                         }
-                        className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-acro-muted hover:text-red-500 opacity-80 group-hover:opacity-100 transition-opacity"
                       >
                         <Trash2 className="size-4" />
                       </button>
@@ -411,7 +411,7 @@ export default function ConfiguracionView() {
                     Valor/Descuento
                   </div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -513,7 +513,7 @@ export default function ConfiguracionView() {
                               handleDeleteAction("PERSONAL", emp.id_persona),
                             )
                           }
-                          className="text-acro-muted hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-acro-muted hover:text-red-500 opacity-80 group-hover:opacity-100 transition-opacity"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -533,7 +533,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Teléfono</div>
                   <div className="col-span-1 text-right pr-4">Rol</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)_40px] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
                   <div className="col-span-1">
                     <select
                       value={personalSelectedId}
