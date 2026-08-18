@@ -1,19 +1,20 @@
 // Componente DayCard
 // Muestra una tarjeta para un día específico, con un cupo máximo y una lista de miembros agendados.
-// Ideal para vistas de calendario o agenda semanal.
 export default function DayCard({ day, cupo = 7, members = [] }) {
   return (
     // Contenedor principal de la tarjeta: usa flexbox en columna con un alto mínimo.
-    <div className="flex min-h-[260px] flex-col rounded-2xl bg-gris-oscuro-acro p-4">
-      
+    <article className="flex min-h-[260px] flex-col rounded-2xl bg-gris-oscuro-acro p-4">
       {/* Encabezado de la tarjeta: Título del día y contador de cupos */}
-      <div className="mb-3 flex items-center justify-between">
+      <header className="mb-3 flex items-center justify-between">
         <h3 className="text-lg font-medium text-blanco-acro">{day}</h3>
         {/* Mostramos cuántos miembros hay agendados respecto al cupo total */}
-        <span className="text-sm text-acro-muted">
+        <span
+          className="text-sm text-acro-muted"
+          aria-label={`${members.length} de ${cupo} cupos ocupados`}
+        >
           {members.length}/{cupo}
         </span>
-      </div>
+      </header>
 
       {/* Renderizado condicional: si no hay miembros, mostramos un mensaje */}
       {members.length === 0 ? (
@@ -35,6 +36,6 @@ export default function DayCard({ day, cupo = 7, members = [] }) {
           ))}
         </ul>
       )}
-    </div>
+    </article>
   );
 }
