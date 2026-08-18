@@ -14,15 +14,7 @@ import {
 } from "lucide-react";
 
 import { useHistorico } from "@/hooks/use-historico";
-
-const PLAN_OPTIONS = [
-  "Básico",
-  "Acrofobia",
-  "Atleta",
-  "Estudiante",
-  "Pases",
-  "Plan Pareja",
-];
+import { useConfiguracion } from "@/hooks/use-configuracion";
 
 // Componente HistoricoView
 // Muestra una tabla con el registro histórico de los check-ins (asistencias) al gimnasio.
@@ -49,6 +41,10 @@ export default function HistoricoView() {
     fechaDesde: fechaDesde || undefined,
     fechaHasta: fechaHasta || undefined,
   });
+
+  // Obtenemos los planes desde la base de datos para el filtro
+  const { data: configData } = useConfiguracion();
+  const planesOptions = configData?.planes?.map((p) => p.nombre) || [];
 
   return (
     <section className="pb-24">
@@ -83,7 +79,7 @@ export default function HistoricoView() {
             >
               Tipo de plan
             </option>
-            {PLAN_OPTIONS.map((p) => (
+            {planesOptions.map((p) => (
               <option
                 key={p}
                 value={p}

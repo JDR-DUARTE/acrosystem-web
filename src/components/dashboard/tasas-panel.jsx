@@ -1,5 +1,5 @@
 "use client";
-
+//Tasas de cambio
 import { useState } from "react";
 import { toast } from "sonner"; // Para mostrar notificaciones (toasts)
 import { DollarSign, Loader2, Save } from "lucide-react";
@@ -22,10 +22,9 @@ function toInput(v) {
 }
 
 // Componente TasasPanel
-// Un panel de administración rápida en el Dashboard para actualizar las tasas de cambio del día.
 export default function TasasPanel({ initial }) {
   const guardar = useGuardarTasas();
-  
+
   // Estado local para los valores de los 3 campos, inicializados con los datos actuales
   const [values, setValues] = useState({
     BCV: toInput(initial?.BCV),
@@ -35,7 +34,7 @@ export default function TasasPanel({ initial }) {
 
   // Manejador del envío del formulario
   async function handleSubmit(event) {
-    event.preventDefault(); // Evita que la página se recargue por defecto
+    event.preventDefault(); //para que la página no se recargue por defecto
     try {
       // Intentamos guardar los datos usando el hook
       await guardar.mutateAsync(values);
@@ -63,7 +62,10 @@ export default function TasasPanel({ initial }) {
         {/* Recorremos el arreglo de configuración para generar los inputs dinámicamente */}
         {CAMPOS.map((c) => (
           <div key={c.key} className="flex flex-1 flex-col gap-1.5">
-            <Label htmlFor={`tasa-${c.key}`} className="text-sm text-acro-muted">
+            <Label
+              htmlFor={`tasa-${c.key}`}
+              className="text-sm text-acro-muted"
+            >
               {c.label}
             </Label>
             <Input
@@ -82,7 +84,7 @@ export default function TasasPanel({ initial }) {
             />
           </div>
         ))}
-        
+
         {/* Botón de guardado */}
         <button
           type="submit"

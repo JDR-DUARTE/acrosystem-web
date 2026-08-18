@@ -22,7 +22,7 @@ function Brand({ onClick }) {
     >
       <Image
         src="/logo-acro.png"
-        alt="Acrofobia"
+        alt="Logo de acrofobia, un perosnaje amarillo llamado Acro escalanado en las letras que componen el nombre acrofobia"
         width={40}
         height={40}
         // Usamos shrink-0 para evitar que el logo se encoja si el espacio es reducido
@@ -58,12 +58,12 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
     try {
       const supabase = createClient();
       await supabase.auth.signOut();
-      // Usamos window.location para forzar una recarga completa, asegurando 
+      // Usamos window.location para forzar una recarga completa, asegurando
       // que todo el estado local y la sesión se limpien por completo
-      window.location.href = "/login";
+      router.push("/login");
     } catch (err) {
       console.error(err);
-      window.location.href = "/login";
+      router.push("/login");
     }
   };
 
@@ -116,20 +116,19 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
 }
 
 // AppShell: Componente contenedor principal (envoltorio) de la aplicación
-// Define el layout estructural con una cabecera (Header), una barra lateral (Sidebar) 
+// Define el layout estructural con una cabecera (Header), una barra lateral (Sidebar)
 // y un área principal de contenido (Main).
 export default function AppShell({ isAdmin = false, children }) {
   // Estado para controlar el menú lateral en dispositivos móviles
   const [open, setOpen] = useState(false);
   // Obtenemos la ruta actual para saber qué opción de menú iluminar
   const pathname = usePathname();
-  
+
   const closeMenu = () => setOpen(false);
 
   return (
     // Contenedor principal de altura completa (min-h-dvh)
     <div className="flex min-h-dvh flex-col bg-negro-fondo-acro">
-      
       {/* Cabecera (Header) - Solo visible realmente o útil en móvil, 
           ya que la Sidebar en escritorio incluye la navegación, pero 
           aquí muestra el Brand siempre */}
@@ -145,15 +144,14 @@ export default function AppShell({ isAdmin = false, children }) {
           <Menu className="size-7" />
         </button>
       </header>
-      
+
       {/* Contenedor del área de contenido principal y la barra lateral */}
       <div className="flex flex-1">
-        
         {/* Barra Lateral (Desktop) - Oculta en móvil (hidden), visible a partir de tamaño sm (sm:block) */}
         <aside className="sticky top-[72px] hidden h-[calc(100vh-72px)] w-[240px] shrink-0 overflow-y-auto no-scrollbar bg-gris-oscuro-acro sm:block md:w-[260px] xl:w-[320px]">
           <SidebarBody isAdmin={isAdmin} pathname={pathname} />
         </aside>
-        
+
         {/* Área principal donde se inyecta el contenido (children) de la página actual */}
         <main className="min-w-0 flex-1 border-border p-4 sm:border-l sm:p-6 lg:p-8">
           {children}
@@ -183,7 +181,7 @@ export default function AppShell({ isAdmin = false, children }) {
               <X className="size-6" />
             </button>
           </div>
-          
+
           {/* Cuerpo del menú móvil */}
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <SidebarBody

@@ -1,5 +1,6 @@
+"use client";
 // Componente DayCard
-// Muestra una tarjeta para un día específico, con un cupo máximo y una lista de miembros agendados.
+// Tarjeta de un dia de horario
 export default function DayCard({ day, cupo = 7, members = [] }) {
   return (
     // Contenedor principal de la tarjeta: usa flexbox en columna con un alto mínimo.
