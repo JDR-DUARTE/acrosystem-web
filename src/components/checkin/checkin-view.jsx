@@ -1,8 +1,7 @@
 "use client";
-// Le decimos a Next.js que este componente usa características del cliente (navegador)
+// se usa características del cliente (navegador)
 import { useState, useCallback } from "react";
 // next/dynamic nos permite cargar componentes de forma perezosa (lazy load)
-// Útil para librerías pesadas como el escáner QR que no queremos que bloqueen la carga inicial.
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -16,8 +15,7 @@ import {
 } from "lucide-react";
 import { useCheckin } from "@/hooks/use-checkin";
 
-// Cargamos el componente QrScanner dinámicamente y evitamos que se renderice en el servidor (ssr: false)
-// porque la cámara web solo existe en el navegador (cliente).
+// Carga del componente QrScanner dinámicamente,evitar que se renderice en el servidor (ssr: false)
 const QrScanner = dynamic(() => import("@/components/checkin/qr-scanner"), {
   ssr: false,
 });
@@ -69,9 +67,9 @@ function ResultCard({ result, onGoToMember }) {
             ? "Acceso permitido"
             : result.resultado === "advertencia"
               ? "Acceso valido"
-            : result.resultado === "denegado"
-              ? "Acceso denegado"
-              : "No encontrado"}
+              : result.resultado === "denegado"
+                ? "Acceso denegado"
+                : "No encontrado"}
         </p>
       </div>
 
@@ -93,28 +91,41 @@ function ResultCard({ result, onGoToMember }) {
       )}
 
       {/* Mensaje devuelto por el servidor */}
-      <p className="mt-3 text-sm font-medium text-blanco-acro">{result.mensaje}</p>
+      <p className="mt-3 text-sm font-medium text-blanco-acro">
+        {result.mensaje}
+      </p>
 
       {/* Detalles del Plan */}
       <div className="mt-3 flex flex-col gap-1 border-t border-gris-claro-acro/20 pt-3 text-sm">
         {result.plan && (
           <p className="text-acro-muted">
-            Plan: <span className="font-semibold text-blanco-acro">{result.plan}</span>
+            Plan:{" "}
+            <span className="font-semibold text-blanco-acro">
+              {result.plan}
+            </span>
           </p>
         )}
 
         {result.fechaExpiracion && (
           <p className="text-acro-muted">
-            Vencimiento: <span className="font-semibold text-blanco-acro">{result.fechaExpiracion}</span>
+            Vencimiento:{" "}
+            <span className="font-semibold text-blanco-acro">
+              {result.fechaExpiracion}
+            </span>
           </p>
         )}
 
-        {/* Muestra días restantes solo si es un plan por pases/días (ej. Plan 10 días) */}
-        {result.usaPases && result.pasesRestantes !== null && result.pasesRestantes !== undefined && (
-          <p className="text-acro-muted">
-            Días restantes: <span className="font-bold text-amarillo-acro">{result.pasesRestantes}</span>
-          </p>
-        )}
+        {/* Muestra días restantes solo si es un plan por pases/días */}
+        {result.usaPases &&
+          result.pasesRestantes !== null &&
+          result.pasesRestantes !== undefined && (
+            <p className="text-acro-muted">
+              Días restantes:{" "}
+              <span className="font-bold text-amarillo-acro">
+                {result.pasesRestantes}
+              </span>
+            </p>
+          )}
       </div>
     </div>
   );
@@ -123,7 +134,7 @@ function ResultCard({ result, onGoToMember }) {
 // Componente Principal
 export default function CheckinView() {
   const router = useRouter();
-  
+
   // Definición de estados locales (useState) para controlar la UI
   const [cedula, setCedula] = useState("");
   const [scanning, setScanning] = useState(false); // Para mostrar/ocultar la cámara
@@ -277,4 +288,3 @@ export default function CheckinView() {
     </section>
   );
 }
-

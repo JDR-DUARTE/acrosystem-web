@@ -202,7 +202,7 @@ export default function ConfiguracionView() {
                 <div className="col-span-1"></div>
               </div>
 
-              {/* Table Rows */}
+              {/* columnas de la tabla */}
               <div className="divide-y divide-white/5 border-b border-gris-claro-acro/20">
                 {planes.map((p) => (
                   <div
@@ -260,7 +260,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Agenda</div>
                   <div className="col-span-1 text-right pr-4">Precio</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -359,7 +359,7 @@ export default function ConfiguracionView() {
                 <div className="col-span-1"></div>
               </div>
 
-              {/* Table Rows */}
+              {/* columnas de la tabla */}
               <div className="divide-y divide-white/5 border-b border-gris-claro-acro/20">
                 {promos.map((pr) => (
                   <div
@@ -411,7 +411,7 @@ export default function ConfiguracionView() {
                     Valor/Descuento
                   </div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <input
                       type="text"
@@ -484,7 +484,7 @@ export default function ConfiguracionView() {
                 <div className="col-span-1"></div>
               </div>
 
-              {/* Table Rows */}
+              {/* columnas de tabla */}
               <div className="divide-y divide-white/5 border-b border-gris-claro-acro/20">
                 {personal.map((emp) => {
                   const memberInfo = miembros.find(
@@ -533,7 +533,7 @@ export default function ConfiguracionView() {
                   <div className="col-span-1 text-center">Teléfono</div>
                   <div className="col-span-1 text-right pr-4">Rol</div>
                 </div>
-                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-10">
+                <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)] gap-2 items-center relative pb-12">
                   <div className="col-span-1">
                     <select
                       value={personalSelectedId}
@@ -590,7 +590,7 @@ export default function ConfiguracionView() {
         </div>
       </div>
 
-      {/* Password Modal */}
+      {/* Modal de seguridad Password*/}
       {showPasswordModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-6 shadow-xl">
@@ -608,12 +608,15 @@ export default function ConfiguracionView() {
               className="w-full bg-gris-oscuro-acro text-blanco-acro rounded-lg px-3 py-2 text-sm border-none focus:ring-1 focus:ring-amarillo-acro outline-none mb-2"
               autoFocus
             />
+            {/* Mensaje de error condicional: Solo se muestra si hay un texto en 'passwordError' */}
             {passwordError && (
               <p className="mb-4 text-xs font-semibold text-red-500">
                 {passwordError}
               </p>
             )}
+            {/* Contenedor de botones de acción */}
             <div className="mt-6 flex justify-end gap-3">
+              {/* Botón Cancelar: Simplemente cierra el modal cambiando el estado a false */}
               <button
                 type="button"
                 onClick={() => setShowPasswordModal(false)}
@@ -621,26 +624,32 @@ export default function ConfiguracionView() {
               >
                 Cancelar
               </button>
+              {/* Botón Confirmar: Ejecuta la validación asíncrona */}
               <button
                 type="button"
                 disabled={isVerifying}
                 onClick={async () => {
+                  // 1. Validación temprana: Si el campo está vacío, muestra error y detiene la función
                   if (!password) {
                     setPasswordError("Ingresa tu contraseña.");
                     return;
                   }
+                  // 2. Preparación: Activa el estado de carga y limpia errores previos
                   setIsVerifying(true);
                   setPasswordError("");
                   try {
+                    // 3. Petición a la API: Envía la contraseña al backend para validación
                     const res = await fetch("/api/auth/verify-password", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({ password }),
                     });
                     const data = await res.json();
+                    // Si la respuesta HTTP no es exitosa (ej. 401 o 500), lanza un error
                     if (!res.ok)
                       throw new Error(data.error || "Error de autenticación.");
 
+                    // 4. Éxito: Cierra el modal y ejecuta la acción que estaba pendiente
                     setShowPasswordModal(false);
                     if (pendingAction) await pendingAction();
                   } catch (err) {

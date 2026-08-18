@@ -29,7 +29,12 @@ export default function InventarioView() {
 
   // Queries & Mutations
   const { data: categorias } = useCategorias();
-  const { data: productos, isLoading, isError, error } = useProductos({
+  const {
+    data: productos,
+    isLoading,
+    isError,
+    error,
+  } = useProductos({
     search: search.trim() || undefined,
     stockBajo: stockBajo ? true : undefined,
   });
@@ -62,10 +67,11 @@ export default function InventarioView() {
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
           <Input
+            type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre"
-            className="h-12 w-full rounded-xl bg-[#3E3E3E] pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
+            className="h-12 w-full rounded-xl bg-blanco-acro pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
           />
         </div>
 

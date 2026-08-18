@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { usePagos } from "@/hooks/use-pagos";
 import { useProductos } from "@/hooks/use-tienda";
+import { useConfiguracion } from "@/hooks/use-configuracion";
 
 export default function PagosView() {
   const [search, setSearch] = useState("");
@@ -34,6 +35,7 @@ export default function PagosView() {
 
   // Fetch productos to populate filter options
   const { data: productos } = useProductos();
+  const { data: configData } = useConfiguracion();
 
   // Query pagos
   const {
@@ -49,12 +51,9 @@ export default function PagosView() {
   });
 
   // Unique list of product/plan names for dropdown
+  const planesNombres = configData?.planes?.map((p) => p.nombre) || [];
   const productOptions = Array.from(
-    new Set(
-      (productos || [])
-        .map((p) => p.nombre)
-        .concat(["Pase Diario", "Plan 10", "Plan Mensual", "Plan Niños"]),
-    ),
+    new Set((productos || []).map((p) => p.nombre).concat(planesNombres)),
   ).sort();
 
   // Formatting date for display (DD/MM/YYYY)
