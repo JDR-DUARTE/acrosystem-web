@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -17,14 +18,14 @@ import {
 export default function DetalleProductoView({ productId }) {
   const router = useRouter();
 
-  // Queries & Mutations
+  // consultas
   const { data: categorias = [] } = useCategorias();
   const { data: producto, isLoading: isLoadingProd } = useProducto(productId);
 
   const crearMutation = useCrearProducto();
   const actualizarMutation = useActualizarProducto();
 
-  // Form State
+  // estado del formulario
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
@@ -33,7 +34,7 @@ export default function DetalleProductoView({ productId }) {
   const [stockMinimo, setStockMinimo] = useState("5");
   const [observaciones, setObservaciones] = useState("");
 
-  // Populate data when editing an existing product
+  // seteando
   useEffect(() => {
     if (producto) {
       setNombre(producto.nombre || "");
@@ -109,7 +110,7 @@ export default function DetalleProductoView({ productId }) {
 
   return (
     <section className="relative pb-28">
-      {/* Encabezado: Botón Volver y Título */}
+      {/* Encabezado*/}
       <div className="mb-6 flex items-center gap-3">
         <Link
           href="/inventario"
@@ -123,20 +124,19 @@ export default function DetalleProductoView({ productId }) {
         </h1>
       </div>
 
-      {/* Formulario adaptativo (Desktop/Tablet 2 columnas, Mobile 1 columna) */}
+      {/* Formulario  */}
       <form onSubmit={handleSubmit} className="mt-6">
-        {/* Vista Desktop y Tablet (2 columnas) */}
-        <div className="hidden md:grid md:grid-cols-2 md:gap-x-6 md:gap-y-5">
-          {/* Fila 1 */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5">
+          {/* Nombre */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="nombre-desk"
+              htmlFor="nombre"
               className="text-base font-normal text-blanco-acro"
             >
               *Nombre
             </Label>
             <Input
-              id="nombre-desk"
+              id="nombre"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Nombre del producto"
@@ -145,15 +145,16 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
+          {/* Categoría */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="categoria-desk"
+              htmlFor="categoria"
               className="text-base font-normal text-blanco-acro"
             >
               *Categoría
             </Label>
             <select
-              id="categoria-desk"
+              id="categoria"
               value={categoriaId}
               onChange={(e) => setCategoriaId(e.target.value)}
               className={inputClass}
@@ -169,16 +170,16 @@ export default function DetalleProductoView({ productId }) {
             </select>
           </div>
 
-          {/* Fila 2 */}
+          {/* Descripción */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="descripcion-desk"
+              htmlFor="descripcion"
               className="text-base font-normal text-blanco-acro"
             >
               *Descripción
             </Label>
             <Input
-              id="descripcion-desk"
+              id="descripcion"
               value={descripcion}
               onChange={(e) => setDescripcion(e.target.value)}
               placeholder="Descripción o detalle"
@@ -186,15 +187,16 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
+          {/* Precio */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="precio-desk"
+              htmlFor="precio"
               className="text-base font-normal text-blanco-acro"
             >
               Precio ($)
             </Label>
             <Input
-              id="precio-desk"
+              id="precio"
               type="number"
               step="0.01"
               min="0"
@@ -205,16 +207,16 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
-          {/* Fila 3 */}
+          {/* Stock actual */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="stock-desk"
+              htmlFor="stock"
               className="text-base font-normal text-blanco-acro"
             >
               Stock actual
             </Label>
             <Input
-              id="stock-desk"
+              id="stock"
               type="number"
               min="0"
               value={stockActual}
@@ -224,15 +226,16 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
+          {/* Stock mínimo */}
           <div className="flex flex-col gap-2">
             <Label
-              htmlFor="stock-min-desk"
+              htmlFor="stock-min"
               className="text-base font-normal text-blanco-acro"
             >
               Stock mínimo
             </Label>
             <Input
-              id="stock-min-desk"
+              id="stock-min"
               type="number"
               min="0"
               value={stockMinimo}
@@ -242,16 +245,16 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
-          {/* Fila 4 */}
+          {/* Observaciones  */}
           <div className="flex flex-col gap-2 md:col-span-2">
             <Label
-              htmlFor="observaciones-desk"
+              htmlFor="observaciones"
               className="text-base font-normal text-blanco-acro"
             >
               Observaciones del Ajuste (Opcional)
             </Label>
             <Input
-              id="observaciones-desk"
+              id="observaciones"
               value={observaciones}
               onChange={(e) => setObservaciones(e.target.value)}
               placeholder="Ej. Ingreso de mercancía nueva / Merma por daño..."
@@ -260,138 +263,7 @@ export default function DetalleProductoView({ productId }) {
           </div>
         </div>
 
-        {/* Vista Móvil (1 columna apilada) */}
-        <div className="flex flex-col gap-5 md:hidden">
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="nombre-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Nombre
-            </Label>
-            <Input
-              id="nombre-mob"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              placeholder="Nombre del producto"
-              className={inputClass}
-              required
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="descripcion-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Descripción
-            </Label>
-            <Input
-              id="descripcion-mob"
-              value={descripcion}
-              onChange={(e) => setDescripcion(e.target.value)}
-              placeholder="Descripción del producto"
-              className={inputClass}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="categoria-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Categoría
-            </Label>
-            <select
-              id="categoria-mob"
-              value={categoriaId}
-              onChange={(e) => setCategoriaId(e.target.value)}
-              className={inputClass}
-            >
-              <option value="" className="bg-[#1C1C1C]">
-                Selecciona una categoría
-              </option>
-              {categorias.map((cat) => (
-                <option key={cat.id} value={cat.id} className="bg-[#1C1C1C]">
-                  {cat.nombre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="precio-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Precio
-            </Label>
-            <Input
-              id="precio-mob"
-              type="number"
-              step="0.01"
-              min="0"
-              value={precio}
-              onChange={(e) => setPrecio(e.target.value)}
-              placeholder="0"
-              className={inputClass}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="stock-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Stock actual
-            </Label>
-            <Input
-              id="stock-mob"
-              type="number"
-              min="0"
-              value={stockActual}
-              onChange={(e) => setStockActual(e.target.value)}
-              placeholder="0"
-              className={inputClass}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="stock-min-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Stock minimo
-            </Label>
-            <Input
-              id="stock-min-mob"
-              type="number"
-              min="0"
-              value={stockMinimo}
-              onChange={(e) => setStockMinimo(e.target.value)}
-              placeholder="5"
-              className={inputClass}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label
-              htmlFor="observaciones-mob"
-              className="text-base font-normal text-blanco-acro"
-            >
-              Observaciones (Opcional)
-            </Label>
-            <Input
-              id="observaciones-mob"
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
-              placeholder="Ej. Ingreso / Merma..."
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        {/* Botón Flotante para Guardar (FAB) */}
+        {/* Botón Flotante para Guardar*/}
         <button
           type="submit"
           disabled={isSaving}
