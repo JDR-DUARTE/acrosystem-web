@@ -1,3 +1,4 @@
+//Formulario de Miembro
 "use client";
 
 import { useState } from "react";
@@ -15,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateMiembro } from "@/hooks/use-miembros";
-
+//Componente con etiqueta y label
 function Field({ label, required, htmlFor, children }) {
   return (
     <div className="flex flex-col gap-2">
@@ -27,7 +28,7 @@ function Field({ label, required, htmlFor, children }) {
     </div>
   );
 }
-
+//gestion de rutas y estado inicial
 export default function MiembroForm({ categorias = [] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,7 +37,7 @@ export default function MiembroForm({ categorias = [] }) {
   const [categoriaId, setCategoriaId] = useState(
     categorias[0] ? String(categorias[0].id) : "",
   );
-
+  //envio de datos del formulario
   async function handleSubmit(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -50,7 +51,7 @@ export default function MiembroForm({ categorias = [] }) {
       numAsuncionRiesgos: form.get("numAsuncionRiesgos"),
       categoriaId,
     };
-
+    //redirecion a tienda o a miembros
     try {
       const { id } = await createMiembro.mutateAsync(input);
       toast.success("Miembro registrado correctamente.");
@@ -73,6 +74,7 @@ export default function MiembroForm({ categorias = [] }) {
   return (
     <section className="mx-auto w-full max-w-2xl pb-24">
       <div className="mb-6 flex items-center gap-3">
+        {/*Encabezado */}
         <Link
           href={volverATienda ? "/tienda?restore=1" : "/miembros"}
           aria-label="Volver"
@@ -84,8 +86,12 @@ export default function MiembroForm({ categorias = [] }) {
           Datos de Miembro
         </h1>
       </div>
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5">
+      {/*Formulario */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5"
+      >
+        {/*Creacion de campos */}
         <Field label="Nombre" required htmlFor="nombre">
           <Input id="nombre" name="nombre" className={inputClass} required />
         </Field>
@@ -134,10 +140,13 @@ export default function MiembroForm({ categorias = [] }) {
             required
           />
         </Field>
-
+        {/*Desplegabel de categorias */}
         <Field label="Categoría" htmlFor="categoria">
           <Select value={categoriaId} onValueChange={setCategoriaId}>
-            <SelectTrigger id="categoria" className="h-12 w-full bg-gris-oscuro-acro">
+            <SelectTrigger
+              id="categoria"
+              className="h-12 w-full bg-gris-oscuro-acro"
+            >
               <SelectValue placeholder="Selecciona una categoría" />
             </SelectTrigger>
             <SelectContent>
@@ -149,7 +158,7 @@ export default function MiembroForm({ categorias = [] }) {
             </SelectContent>
           </Select>
         </Field>
-
+        {/*Boton Flotable */}
         <button
           type="submit"
           disabled={pending}

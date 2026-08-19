@@ -1,6 +1,6 @@
 "use client";
 
-// Importación de componentes e íconos para la vista de Métricas
+// Importación de componentes e íconos
 import { useState } from "react";
 import { useMetricas } from "@/hooks/use-metricas";
 import { Loader2, AlertCircle, Activity } from "lucide-react";
@@ -14,9 +14,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-/**
- * Componente principal para la visualización de Métricas, Ingresos, Stock y Afluencia.
- */
+//Componente de Métricas, Ingresos, Stock y Afluencia.
+
 export default function MetricasView() {
   // Consulta de datos desde la API de métricas
   const { data, isLoading, isError, error } = useMetricas();
@@ -106,14 +105,14 @@ export default function MetricasView() {
       </div>
 
       <div className="flex flex-col gap-10">
-        {/* Secciones de Resumen de Ingresos con Filtros de Fecha (Desde / Hasta) */}
+        {/* Seccion de ingreso*/}
         <div>
           <h2 className="mb-3 text-xl font-semibold text-blanco-acro flex items-center gap-2">
             <Activity className="size-5 text-amarillo-acro" />
             Resumen de Ingresos
           </h2>
 
-          {/* Filtros de Rango de Fechas (Desde / Hasta) */}
+          {/* Filtros  */}
           <div className="mb-4 flex flex-nowrap gap-2 sm:gap-4">
             <input
               type="text"
@@ -152,7 +151,7 @@ export default function MetricasView() {
 
           <div className="overflow-x-auto rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
             <div className="min-w-[500px]">
-              {/* Table Header */}
+              {/* cabecera de tabla */}
               <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
                 <div className="col-span-4 sm:col-span-4">Producto</div>
                 <div className="col-span-2 text-center sm:col-span-2">
@@ -164,7 +163,7 @@ export default function MetricasView() {
                 <div className="col-span-3 text-right sm:col-span-3">Monto</div>
               </div>
 
-              {/* Table Rows */}
+              {/* Tabla Rows */}
               <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
                 {ingresosFiltrados.length === 0 ? (
                   <div className="px-6 py-4 text-sm text-acro-muted">
@@ -238,7 +237,7 @@ export default function MetricasView() {
 
           <div className="overflow-x-auto rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 shadow-xl">
             <div className="min-w-[500px]">
-              {/* Table Header */}
+              {/* cabecera de tabla */}
               <div className="grid grid-cols-12 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-acro-muted sm:px-6">
                 <div className="col-span-5 sm:col-span-6">Movimiento</div>
                 <div className="col-span-4 text-center sm:col-span-3">
@@ -249,7 +248,7 @@ export default function MetricasView() {
                 </div>
               </div>
 
-              {/* Table Rows */}
+              {/* filas de tabla */}
               <div className="divide-y divide-white/5 max-h-60 overflow-y-auto">
                 {stockFiltrado.length === 0 ? (
                   <div className="px-6 py-4 text-sm text-acro-muted">

@@ -1,31 +1,22 @@
+//Componente para elegir un miembro en la fase 3 de venta
 "use client";
 import { useState } from "react";
 import { Search, Check, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-// Hook que consulta a la API los miembros usando React Query
 import { useMiembros } from "@/hooks/use-miembros";
 
 // Componente MemberCombobox
-// Es un selector (dropdown) con buscador integrado para encontrar y seleccionar un miembro (cliente)
-// a la hora de hacer una venta en la tienda.
-// Recibe como props: 
-// - value: El miembro actualmente seleccionado (null si no hay ninguno)
-// - onChange: Función que se ejecuta cuando se selecciona o deselecciona un miembro
 export default function MemberCombobox({ value, onChange }) {
-  // Estado para el texto que el usuario escribe en el buscador
+  // Estado de text en el buscador
   const [term, setTerm] = useState("");
-  // Estado para saber si el menú desplegable (lista de resultados) está abierto
+  // estado del menu desplegado o no
   const [open, setOpen] = useState(false);
-
-  // Consultamos los miembros a la API pasándole el término de búsqueda
-  // React Query se encarga de manejar el loading y cachear la respuesta
   const { data: miembros, isFetching } = useMiembros(
     term.trim() ? { search: term.trim() } : {},
   );
 
-  // MODO 1: Ya hay un miembro seleccionado
-  // Si tenemos un valor, mostramos una "pastilla" con el nombre y una X para borrarlo
+  // componente con nombre y opcion de deseleccionar
   if (value) {
     return (
       <div className="flex items-center justify-between rounded-md border border-border bg-gris-oscuro-acro px-3 py-2.5">
@@ -42,39 +33,38 @@ export default function MemberCombobox({ value, onChange }) {
     );
   }
 
-  // MODO 2: Buscador activo
+  // Buscador
   const results = miembros ?? [];
 
   return (
     <div className="relative">
-      {/* Ícono de lupa absoluto */}
       <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
-      
+
       {/* Input de texto para buscar */}
       <Input
         value={term}
         onChange={(e) => {
           setTerm(e.target.value);
-          setOpen(true); // Abrimos el menú al escribir
+          setOpen(true); // Abrir menu
         }}
-        onFocus={() => setOpen(true)} // Abrimos el menú al hacer foco (click) en el input
+        onFocus={() => setOpen(true)}
         placeholder="Buscar miembro por nombre o cédula"
         className="h-12 bg-gris-oscuro-acro pl-11"
       />
 
-      {/* Menú Desplegable con los resultados: Solo se muestra si está abierto y hay texto escrito */}
+      {/* Menú Desplegable con los resultados */}
       {open && term.trim() && (
         <ul className="absolute z-30 mt-1 max-h-56 w-full overflow-auto rounded-md border border-border bg-negro-fondo-acro py-1 shadow-lg">
-          {/* Mostramos "Buscando..." si la petición está en curso y aún no hay resultados viejos */}
+          {/* si la petición está en curso y aún no hay resultados viejos */}
           {isFetching && results.length === 0 ? (
             <li className="px-3 py-2 text-sm text-acro-muted">Buscando…</li>
           ) : results.length === 0 ? (
-            /* Mensaje de vacío si no se encontró nadie */
+            /*No se encontró nadie */
             <li className="px-3 py-2 text-sm text-acro-muted">
               Sin resultados.
             </li>
           ) : (
-            /* Lista de resultados (miembros) */
+            /* Lista de miembros */
             results.map((m) => (
               <li key={m.id}>
                 <button
@@ -87,7 +77,7 @@ export default function MemberCombobox({ value, onChange }) {
                   }}
                   className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-blanco-acro hover:bg-gris-claro-acro/10"
                 >
-                  {/* Nombre y cédula (en pequeño) */}
+                  {/* Nombre y cédula  */}
                   <span>
                     {m.nombre}
                     {m.cedula ? (

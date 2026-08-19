@@ -12,7 +12,6 @@ import { NAV_ITEMS } from "@/lib/nav";
 import { createClient } from "@/lib/supabase/client";
 
 // Componente para el Logotipo y la Marca
-// Envuelve un enlace (Link) de Next.js que nos lleva al inicio (dashboard) al hacer clic.
 function Brand({ onClick }) {
   return (
     <Link
@@ -25,9 +24,8 @@ function Brand({ onClick }) {
         alt="Logo de acrofobia, un perosnaje amarillo llamado Acro escalanado en las letras que componen el nombre acrofobia"
         width={40}
         height={40}
-        // Usamos shrink-0 para evitar que el logo se encoja si el espacio es reducido
         className="size-10 shrink-0 object-contain"
-        priority // Ayuda a cargar la imagen de logo lo antes posible
+        priority
       />
       <span className="text-xl font-bold text-blanco-acro">AcroSystem</span>
     </Link>
@@ -35,7 +33,6 @@ function Brand({ onClick }) {
 }
 
 // Función auxiliar para determinar qué clases CSS usar en los elementos del menú
-// Depende de si la ruta (active) es la actual o no.
 function itemClasses(active) {
   return cn(
     "flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium transition-colors",
@@ -46,8 +43,8 @@ function itemClasses(active) {
   );
 }
 
-// Cuerpo de la barra lateral (Sidebar)
-// Contiene todos los enlaces de navegación y se renderiza tanto en Desktop como en Mobile
+// Cuerpo de la barra lateral Sidebar
+
 function SidebarBody({ isAdmin, pathname, onNavigate }) {
   // Filtramos las opciones de menú basándonos en si el usuario es administrador
   const items = NAV_ITEMS.filter((item) => !item.adminOnly || isAdmin);
@@ -58,8 +55,6 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
     try {
       const supabase = createClient();
       await supabase.auth.signOut();
-      // Usamos window.location para forzar una recarga completa, asegurando
-      // que todo el estado local y la sesión se limpien por completo
       router.push("/login");
     } catch (err) {
       console.error(err);
@@ -72,7 +67,6 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
       {/* Sección principal de enlaces de navegación (flex-1 la hace crecer para ocupar el espacio) */}
       <nav className="flex flex-1 flex-col gap-1">
         {items.map((item) => {
-          // Comprobamos si la ruta actual coincide con la del ítem para marcarlo como activo
           const active =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
@@ -80,8 +74,8 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
             <Link
               key={item.href}
               href={item.href}
-              onClick={onNavigate} // Útil en móvil para cerrar el menú tras hacer clic
-              aria-current={active ? "page" : undefined} // Accesibilidad: informa al lector de pantallas de la página actual
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
               className={itemClasses(active)}
             >
               <Icon className="size-5 shrink-0" />
@@ -115,9 +109,7 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
   );
 }
 
-// AppShell: Componente contenedor principal (envoltorio) de la aplicación
-// Define el layout estructural con una cabecera (Header), una barra lateral (Sidebar)
-// y un área principal de contenido (Main).
+// AppShell: Componente contenedor principal
 export default function AppShell({ isAdmin = false, children }) {
   // Estado para controlar el menú lateral en dispositivos móviles
   const [open, setOpen] = useState(false);
@@ -129,12 +121,10 @@ export default function AppShell({ isAdmin = false, children }) {
   return (
     // Contenedor principal de altura completa (min-h-dvh)
     <div className="flex min-h-dvh flex-col bg-negro-fondo-acro">
-      {/* Cabecera (Header) - Solo visible realmente o útil en móvil, 
-          ya que la Sidebar en escritorio incluye la navegación, pero 
-          aquí muestra el Brand siempre */}
+      {/* Cabecera */}
       <header className="sticky top-0 z-40 flex h-[72px] shrink-0 items-center justify-between border-b border-border bg-negro-fondo-acro px-6">
         <Brand />
-        {/* Botón menú hamburguesa: solo se muestra en pantallas pequeñas (sm:hidden lo oculta a partir de tablet) */}
+        {/* Botón menú hamburguesa solo se muestra en pantallas pequeñas sm hiden*/}
         <button
           type="button"
           aria-label="Abrir menú"
@@ -147,18 +137,18 @@ export default function AppShell({ isAdmin = false, children }) {
 
       {/* Contenedor del área de contenido principal y la barra lateral */}
       <div className="flex flex-1">
-        {/* Barra Lateral (Desktop) - Oculta en móvil (hidden), visible a partir de tamaño sm (sm:block) */}
+        {/* Barra Lateral oculta en móvil visible a partir de tamaño sm*/}
         <aside className="sticky top-[72px] hidden h-[calc(100vh-72px)] w-[240px] shrink-0 overflow-y-auto no-scrollbar bg-gris-oscuro-acro sm:block md:w-[260px] xl:w-[320px]">
           <SidebarBody isAdmin={isAdmin} pathname={pathname} />
         </aside>
 
-        {/* Área principal donde se inyecta el contenido (children) de la página actual */}
+        {/* Área principal de contenido children */}
         <main className="min-w-0 flex-1 border-border p-4 sm:border-l sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
 
-      {/* Menú lateral (Sheet) para dispositivos móviles usando los componentes de shadcn/ui */}
+      {/* Menú lateral movil*/}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="left"
