@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Importamos nuestro hook personalizado que se encarga de obtener los datos del servidor (usando React Query)
+//  hook de obtener los datos del servidor
 import { useMiembros } from "@/hooks/use-miembros";
 
 const ALL = "todos";
@@ -23,16 +23,12 @@ const ALL = "todos";
 // Componente MiembrosList
 // Muestra una tabla/lista con todos los miembros y permite filtrarlos.
 export default function MiembrosList({ planes = [] }) {
-  // router nos permite navegar a otras páginas programáticamente
   const router = useRouter();
-
   // Estados locales para controlar los filtros de búsqueda
   const [search, setSearch] = useState("");
   const [plan, setPlan] = useState(ALL);
   const [estado, setEstado] = useState(ALL);
-
   // Llamamos a nuestro hook pasando los filtros actuales.
-  // Cuando cambien los estados, el hook volverá a hacer la petición (si es necesario).
   const {
     data: miembros,
     isLoading,
@@ -53,7 +49,7 @@ export default function MiembrosList({ planes = [] }) {
 
       {/* Controles de Filtro: Barra de búsqueda y Selects */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center">
-        {/* Contenedor relativo para posicionar el ícono de búsqueda de forma absoluta dentro del input */}
+        {/* Contenedor relativo para el ícono */}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
           <Input
@@ -64,7 +60,7 @@ export default function MiembrosList({ planes = [] }) {
           />
         </div>
 
-        {/* Filtro por Plan usando componentes de Shadcn UI */}
+        {/* Filtro por Plan  */}
         <Select value={plan} onValueChange={setPlan}>
           <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro md:w-48">
             <SelectValue placeholder="Tipo de plan" />
@@ -160,7 +156,7 @@ export default function MiembrosList({ planes = [] }) {
         </div>
       </div>
 
-      {/* Botón flotante de acción principal (FAB) para crear un nuevo miembro */}
+      {/* Botón flotante  */}
       <Link
         href="/miembros/nuevo"
         aria-label="Registrar miembro"

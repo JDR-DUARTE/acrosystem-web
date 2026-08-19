@@ -19,25 +19,21 @@ import { Input } from "@/components/ui/input";
 import { usePagos } from "@/hooks/use-pagos";
 import { useProductos } from "@/hooks/use-tienda";
 import { useConfiguracion } from "@/hooks/use-configuracion";
-
+//gestion de estado de filtros
 export default function PagosView() {
   const [search, setSearch] = useState("");
   const [producto, setProducto] = useState("ALL");
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
 
-  // Selected payment for detail modal
+  // control del modal
   const [selectedPago, setSelectedPago] = useState(null);
 
-  // Pagination / Scroll state
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
-
-  // Fetch productos to populate filter options
+  // Para trae productos y configuracion
   const { data: productos } = useProductos();
   const { data: configData } = useConfiguracion();
 
-  // Query pagos
+  // Traer el historial de pagos
   const {
     data: pagos,
     isLoading,
@@ -50,13 +46,13 @@ export default function PagosView() {
     fechaHasta: fechaHasta || undefined,
   });
 
-  // Unique list of product/plan names for dropdown
+  // construccion de lista de opciones del menu deplegabel
   const planesNombres = configData?.planes?.map((p) => p.nombre) || [];
   const productOptions = Array.from(
     new Set((productos || []).map((p) => p.nombre).concat(planesNombres)),
   ).sort();
 
-  // Formatting date for display (DD/MM/YYYY)
+  // ajute de formato de fecha, a uno mas legible
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
     try {
@@ -71,18 +67,9 @@ export default function PagosView() {
     }
   };
 
-  // Pagination logic
-  const totalItems = pagos ? pagos.length : 0;
-  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
-  const pageIndex = Math.min(currentPage, totalPages);
-  const paginatedPagos = (pagos || []).slice(
-    (pageIndex - 1) * itemsPerPage,
-    pageIndex * itemsPerPage,
-  );
-
   return (
     <section className="relative min-h-[calc(100vh-100px)] pb-20">
-      {/* Title & Subtitle */}
+      {/* titulo y subtitulo */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-blanco-acro md:text-4xl">
           Pagos
@@ -92,9 +79,9 @@ export default function PagosView() {
         </p>
       </div>
 
-      {/* Filters Container */}
+      {/* contenedor de filtros */}
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Search Bar */}
+        {/* barra de busqueda */}
         <div className="relative w-full">
           <Search className="absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
           <Input
@@ -108,7 +95,7 @@ export default function PagosView() {
           />
         </div>
 
-        {/* Producto Select Dropdown */}
+        {/* selecionable de productos, filtro*/}
         <div className="relative w-full">
           <select
             value={producto}
@@ -168,7 +155,7 @@ export default function PagosView() {
         </div>
       </div>
 
-      {/* Table / List View */}
+      {/* Tabla lista*/}
       {isLoading ? (
         <div className="flex h-64 items-center justify-center rounded-2xl bg-gris-oscuro-acro border border-gris-claro-acro/20">
           <Loader2 className="size-8 animate-spin text-amarillo-acro" />
@@ -189,14 +176,14 @@ export default function PagosView() {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl bg-gris-oscuro-acro border border-gris-claro-acro/30 shadow-xl">
-          {/* Table Header */}
+          {/* cabecera de tabla */}
           <div className="grid grid-cols-12 bg-gris-oscuro-acro/90 px-4 py-3.5 text-base font-semibold text-blanco-acro sm:px-6">
             <div className="col-span-5 sm:col-span-5">Nombre</div>
             <div className="col-span-4 text-center sm:col-span-4">Fecha</div>
             <div className="col-span-3 text-right sm:col-span-3">Monto</div>
           </div>
 
-          {/* Table Rows */}
+          {/* filas */}
           <div className="divide-y divide-white/5 max-h-[600px] overflow-y-auto">
             {(pagos || []).map((p) => {
               const compradorNombre =
@@ -236,11 +223,11 @@ export default function PagosView() {
         </div>
       )}
 
-      {/* Transaction Detail Modal */}
+      {/* modal de detalles */}
       {selectedPago && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-2xl bg-gris-oscuro-acro p-6 shadow-2xl border border-gris-claro-acro/30 animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
+            {/*  Header */}
             <div className="flex items-start justify-between border-b border-gris-claro-acro/30 pb-4">
               <div>
                 <h3 className="text-xl font-bold text-blanco-acro flex items-center gap-2">
@@ -260,9 +247,9 @@ export default function PagosView() {
               </button>
             </div>
 
-            {/* Modal Content */}
+            {/* Modal Contenido */}
             <div className="mt-4 flex flex-col gap-4">
-              {/* Buyer & Info */}
+              {/* comprador */}
               <div className="grid grid-cols-2 gap-3 rounded-xl bg-negro-fondo-acro p-3.5 text-sm">
                 <div>
                   <span className="flex items-center gap-1.5 text-xs text-acro-muted font-medium">
@@ -300,7 +287,7 @@ export default function PagosView() {
                 </div>
               </div>
 
-              {/* Items Purchased */}
+              {/* lista de items */}
               <div>
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-acro-muted uppercase tracking-wider mb-2">
                   <ShoppingBag className="size-3.5 text-amarillo-acro" /> Ítems
@@ -329,7 +316,7 @@ export default function PagosView() {
                 </div>
               </div>
 
-              {/* Payment Details Footer */}
+              {/* resumen final */}
               <div className="rounded-xl bg-negro-fondo-acro p-3.5 text-sm flex flex-col gap-2">
                 <div className="flex items-center justify-between text-acro-muted">
                   <span className="flex items-center gap-1.5">
@@ -339,7 +326,7 @@ export default function PagosView() {
                     {selectedPago.formaPago}
                   </span>
                 </div>
-
+                {/* Deuda, si la hay */}
                 {selectedPago.deudaGenerada > 0 && (
                   <div className="flex items-center justify-between text-amarillo-acro">
                     <span>Deuda Generada</span>

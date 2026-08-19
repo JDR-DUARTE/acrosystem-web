@@ -23,11 +23,11 @@ import {
 export default function InventarioView() {
   const router = useRouter();
 
-  // Filter States
+  // set para filtros
   const [search, setSearch] = useState("");
   const [stockBajo, setStockBajo] = useState(false);
 
-  // Queries & Mutations
+  // consultas
   const { data: categorias } = useCategorias();
   const {
     data: productos,
@@ -42,7 +42,7 @@ export default function InventarioView() {
   const eliminarMutation = useEliminarProducto();
   const [deletingProduct, setDeletingProduct] = useState(null);
 
-  // Confirm Product Deletion
+  // confirmar eliminar
   const handleDeleteConfirm = async () => {
     if (!deletingProduct) return;
     try {
@@ -135,7 +135,7 @@ export default function InventarioView() {
                     {p.nombre}
                   </h2>
 
-                  {/* Iconos de Acción: Editar (Lápiz amarillo) y Eliminar (Papelera amarilla) */}
+                  {/* Iconos de Acción: Editar y Eliminar */}
                   <div className="flex shrink-0 items-center gap-2">
                     <button
                       type="button"
@@ -156,7 +156,7 @@ export default function InventarioView() {
                   </div>
                 </div>
 
-                {/* Fila de Categoría (Etiqueta amarilla con icono Tag) */}
+                {/* Fila de Categoría */}
                 {categoriaNombre && (
                   <div className="mt-1 flex items-center gap-1.5 text-sm font-normal text-blanco-acro">
                     <Tag className="size-4 text-amarillo-acro shrink-0" />
@@ -171,7 +171,7 @@ export default function InventarioView() {
                   </p>
                 )}
 
-                {/* Pie de la tarjeta: Precio y Stock directamente sobre el fondo de la card (sin píldora blanca) */}
+                {/* Pie de la tarjeta */}
                 <div className="mt-4 flex items-center justify-end gap-4 text-sm font-medium">
                   <span className="text-acro-muted">
                     Precio{" "}
@@ -192,7 +192,7 @@ export default function InventarioView() {
         </div>
       )}
 
-      {/* Botón Flotante para Agregar Producto (FAB) (+) */}
+      {/* Botón Flotante para Agregar  */}
       <button
         type="button"
         aria-label="Agregar producto"

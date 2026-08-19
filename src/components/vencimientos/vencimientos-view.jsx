@@ -1,5 +1,5 @@
 "use client";
-
+//Componente de Vencimientos
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -22,13 +22,13 @@ function WhatsappIcon(props) {
   );
 }
 
-// Opciones de pestañas (Tabs)
+// Opciones de pestañas Proxion o Expirados
 const TABS = [
   { id: "proximos", label: "Próximos" },
   { id: "expirados", label: "Expirados" },
 ];
 
-// Función utilitaria para formatear una fecha YYYY-MM-DD a DD/MM/YYYY
+// Funcion para ajustar fecha, mas legibel
 function formatDate(value) {
   if (!value) return "—";
   const [y, m, d] = value.split("-");
@@ -37,7 +37,7 @@ function formatDate(value) {
 
 // Componente VencimientosView
 // Muestra una lista de miembros cuyos planes están por vencerse o ya se vencieron.
-// Permite contactarlos rápidamente vía WhatsApp.
+// Permite contactarlos vía WhatsApp.
 export default function VencimientosView() {
   const router = useRouter();
 
@@ -46,13 +46,13 @@ export default function VencimientosView() {
   // Estado para la barra de búsqueda
   const [search, setSearch] = useState("");
 
-  // Petición al servidor (React Query) basada en la pestaña actual y la búsqueda
+  // Petición al servidor
   const { data, isLoading, isError, error } = useVencimientos({
     tipo: tab,
     search: search.trim() || undefined,
   });
 
-  // Constantes derivadas para cambiar textos e iconos según la pestaña
+  // Cambiar textos e iconos según la pestaña
   const esExpirados = tab === "expirados";
   const HeaderIcon = esExpirados ? CalendarX : CalendarClock;
   const headerLabel = esExpirados
@@ -64,14 +64,14 @@ export default function VencimientosView() {
   function buildMensaje(v) {
     const fecha = formatDate(v.fechaExpiracion);
     if (esExpirados) {
-      return `Hola ${v.nombre}, esperamos te encuentres muy bien. Te escribimos de Acrofobia para recordarte que tu plan se venció el: ${fecha}. ¡Te esperamos para renovar y seguir escalando juntos!`;
+      return `Hola ${v.nombre}, esperamos te encuentres muy bien. Te escribimos de Acrofobia para recordarte que tu plan se venció el: ${fecha}. ¡Te esperamos para renovar y seguir escalando!`;
     }
-    return `Hola ${v.nombre}, esperamos te encuentres muy bien. Te escribimos de Acrofobia para recordarte que tu plan está próximo a vencer el ${fecha}. ¡Aprovecha para renovar y seguir escalando al máximo!`;
+    return `Hola ${v.nombre}, esperamos te encuentres muy bien. Te escribimos de Acrofobia para recordarte que tu plan está próximo a vencer el ${fecha}. ¡Aprovecha para renovar y seguir escalando!`;
   }
 
   // Notificación de error en caso de que el cliente no tenga teléfono
   function sinTelefono(e, nombre) {
-    e.stopPropagation(); // Evita que al hacer clic en el botón también se haga clic en la tarjeta
+    e.stopPropagation();
     toast.error(`${nombre} no tiene un teléfono registrado.`);
   }
 
@@ -95,14 +95,14 @@ export default function VencimientosView() {
           />
         </div>
 
-        {/* Pestañas (Tabs): Botones para cambiar entre Próximos y Expirados */}
+        {/*  Botones para cambiar entre Próximos y Expirados */}
         <div className="grid w-full max-w-xs grid-cols-2 gap-2">
           {TABS.map((t) => (
             <button
               key={t.id}
               type="button"
               onClick={() => setTab(t.id)}
-              // className dinámico: amarillo si está activo, gris oscuro si no
+              // className dinámico amarillo si está activo, gris oscuro si no
               className={cn(
                 "rounded-xl py-2.5 text-base font-medium transition-colors",
                 tab === t.id
@@ -141,7 +141,7 @@ export default function VencimientosView() {
             {error?.message ?? "No se pudieron cargar los vencimientos."}
           </div>
         ) : !data || data.length === 0 ? (
-          // Estado: Array vacío (Todo está al día)
+          // Estado: Array vacío
           <p className="py-8 text-center text-sm text-acro-muted">
             {esExpirados
               ? "No hay planes vencidos."
@@ -152,9 +152,7 @@ export default function VencimientosView() {
           <ul className="flex flex-col gap-3">
             {data.map((v) => (
               <li key={v.id}>
-                {/* Elemento de Lista Clickable: 
-                    Si le das clic a la tarjeta (no al botón de whatsapp)
-                    te envía al perfil del miembro. */}
+                {/* Para ir al pefil o al wpp segun el caso*/}
                 <div
                   role="button"
                   tabIndex={0}
@@ -177,7 +175,7 @@ export default function VencimientosView() {
 
                   {/* Botón de Whatsapp Dinámico */}
                   {buildWhatsappUrl(v.telefono, buildMensaje(v)) ? (
-                    // Si TIENE teléfono y la URL es válida, mostramos un link (a) real
+                    // Si TIENE teléfono y la URL es válida, mostramos un link real
                     <a
                       href={buildWhatsappUrl(v.telefono, buildMensaje(v))}
                       target="_blank"
