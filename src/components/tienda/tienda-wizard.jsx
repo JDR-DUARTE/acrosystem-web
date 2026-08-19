@@ -1,5 +1,5 @@
 "use client";
-
+//Componente principal de tienda
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -45,23 +45,29 @@ export default function TiendaWizard({
   // Pestañas del carrusel: "Planes" fija al inicio + categorías dinámicas de productos
   const categoryCards = [
     { key: PLANES_KEY, nombre: "Planes", icon: Ticket },
-    ...categorias.map((c) => ({ key: c.id, nombre: c.nombre, icon: Handshake })),
+    ...categorias.map((c) => ({
+      key: c.id,
+      nombre: c.nombre,
+      icon: Handshake,
+    })),
   ];
 
-  // --------------------------------------------------------------------------
   // Estados del Flujo y Navegación
-  // --------------------------------------------------------------------------
+
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(categoryCards[0]?.key ?? PLANES_KEY);
+  const [selectedCategory, setSelectedCategory] = useState(
+    categoryCards[0]?.key ?? PLANES_KEY,
+  );
   const [cart, setCart] = useState([]);
 
-  // --------------------------------------------------------------------------
   // Estados del Formulario de Cobro (Paso 3)
-  // --------------------------------------------------------------------------
+
   // La categoría por defecto toma la primera opción de la base de datos o "Regular"
   const defaultCategoriaNombre = categoriasPrecio[0]?.nombre || "Regular";
-  const [categoriaPrecio, setCategoriaPrecio] = useState(defaultCategoriaNombre);
+  const [categoriaPrecio, setCategoriaPrecio] = useState(
+    defaultCategoriaNombre,
+  );
   const [miembro, setMiembro] = useState(null);
   const [moneda, setMoneda] = useState("USD");
   const [formaPago, setFormaPago] = useState("Efectivo");
@@ -69,9 +75,8 @@ export default function TiendaWizard({
   const [montoPagado, setMontoPagado] = useState("");
   const [ventaOk, setVentaOk] = useState(null);
 
-  // --------------------------------------------------------------------------
   // Restauración de Borrador (Draft) al regresar de "Registrar Miembro"
-  // --------------------------------------------------------------------------
+
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const nuevoId = searchParams.get("nm");
@@ -118,9 +123,8 @@ export default function TiendaWizard({
     router.push("/miembros/nuevo?returnTo=tienda");
   }
 
-  // --------------------------------------------------------------------------
   // Consultas y Mutaciones de Datos
-  // --------------------------------------------------------------------------
+
   const isPlanes = selectedCategory === PLANES_KEY;
   const crearVenta = useCrearVenta();
 
@@ -133,12 +137,13 @@ export default function TiendaWizard({
   // Filtro reactivo en memoria para los planes
   const planesFiltrados = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return term ? planes.filter((p) => p.nombre.toLowerCase().includes(term)) : planes;
+    return term
+      ? planes.filter((p) => p.nombre.toLowerCase().includes(term))
+      : planes;
   }, [planes, search]);
 
-  // --------------------------------------------------------------------------
   // Cálculos Financieros y Totales del Carrito
-  // --------------------------------------------------------------------------
+
   const subtotal = useMemo(
     () => cart.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
     [cart],
@@ -150,9 +155,8 @@ export default function TiendaWizard({
   const totalItems = cart.reduce((acc, item) => acc + item.cantidad, 0);
   const hasPlan = cart.some((item) => item.kind === "plan");
 
-  // --------------------------------------------------------------------------
   // Acciones sobre el Carrito de Compras
-  // --------------------------------------------------------------------------
+
   /**
    * Agrega un producto al carrito o incrementa su cantidad.
    */
@@ -220,7 +224,10 @@ export default function TiendaWizard({
         i.key === key
           ? {
               ...i,
-              cantidad: Math.max(1, Math.min(i.kind === "plan" ? 1 : 99, cantidad)),
+              cantidad: Math.max(
+                1,
+                Math.min(i.kind === "plan" ? 1 : 99, cantidad),
+              ),
             }
           : i,
       ),
@@ -253,7 +260,9 @@ export default function TiendaWizard({
         const dias = i.dias ?? [];
         return {
           ...i,
-          dias: dias.includes(dia) ? dias.filter((d) => d !== dia) : [...dias, dia],
+          dias: dias.includes(dia)
+            ? dias.filter((d) => d !== dia)
+            : [...dias, dia],
         };
       }),
     );
@@ -263,9 +272,8 @@ export default function TiendaWizard({
     (i) => i.kind === "plan" && i.requiereAgenda,
   );
 
-  // --------------------------------------------------------------------------
   // Confirmación Final de la Venta
-  // --------------------------------------------------------------------------
+
   async function confirmarVenta() {
     if (hasPlan && !miembro) {
       toast.error("Selecciona el miembro para vender un plan.");
@@ -274,7 +282,9 @@ export default function TiendaWizard({
 
     const sinDias = planesConAgenda.find((i) => (i.dias ?? []).length === 0);
     if (sinDias) {
-      toast.error(`Selecciona los días de asistencia para "${sinDias.nombre}".`);
+      toast.error(
+        `Selecciona los días de asistencia para "${sinDias.nombre}".`,
+      );
       return;
     }
 
