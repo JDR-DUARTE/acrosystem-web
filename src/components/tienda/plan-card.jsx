@@ -3,15 +3,7 @@
 import { ShoppingCart } from "lucide-react";
 import { money } from "./product-card";
 
-/**
- * Componente de tarjeta de Plan de Entrenamiento / Suscripción.
- * Permite a los usuarios seleccionar planes (con pases o ilimitados por días).
- *
- * @param {Object} props
- * @param {Object} props.plan - Datos del plan (id, nombre, precio, pasesTotales, duracionDias, etc.)
- * @param {Function} props.onAdd - Callback ejecutado al presionar el botón de agregar
- * @param {boolean} props.added - Indica si el plan ya se encuentra presente en el carrito
- */
+ // Componente de tarjeta de Plan
 export default function PlanCard({ plan, onAdd, added }) {
   return (
     <article className="flex flex-col justify-between gap-2 rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-4 shadow-xl">
@@ -23,7 +15,10 @@ export default function PlanCard({ plan, onAdd, added }) {
           {plan.pasesTotales > 0 ? `${plan.pasesTotales} pases · ` : ""}
           {plan.duracionDias} días
         </p>
-        <p className="text-xl font-bold text-blanco-acro mt-2">{money(plan.precio)}</p>
+        //llama a la funcion money para mostrar el precio
+        <p className="text-xl font-bold text-blanco-acro mt-2">
+          {money(plan.precio)}
+          </p>
       </div>
 
       <div className="mt-3 flex items-center justify-end pt-1">

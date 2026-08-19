@@ -7,10 +7,8 @@ import { cn } from "@/lib/utils";
 import ProductCard from "./product-card";
 import PlanCard from "./plan-card";
 
-/**
- * Paso 1 del Asistente de Tienda: Catalogo de Productos y Planes.
- * Proporciona navegación por categorias, barra de búsqueda reactiva y catálogo interactivo.
- */
+// Paso 1 de Tienda: Catalogo de Productos y Planes.
+
 export default function TiendaStepCatalogo({
   categoryCards = [],
   selectedCategory,
@@ -27,7 +25,7 @@ export default function TiendaStepCatalogo({
 }) {
   const carouselRef = useRef(null);
 
-  // Desplazamiento suave hacia la izquierda en el carrusel de categorías
+  // Desplazamiento suave hacia la izquierda en el carrusel de categorias
   const scrollLeft = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({ left: -220, behavior: "smooth" });
@@ -43,9 +41,9 @@ export default function TiendaStepCatalogo({
 
   return (
     <div>
-      {/* Carrusel deslizable de categorías de productos y planes */}
+      {/* Carrusel deslizable de categorias de productos y planes */}
       <div className="relative group my-2">
-        {/* Botón de navegación izquierda (visible en pantallas medianas en adelante) */}
+        {/* Boton de navegacion izquierda (visible en pantallas medianas en adelante) */}
         <button
           type="button"
           onClick={scrollLeft}
@@ -55,7 +53,7 @@ export default function TiendaStepCatalogo({
           <ChevronLeft className="size-5" />
         </button>
 
-        {/* Contenedor con scroll horizontal para tarjetas de categorías */}
+        {/* Contenedor con scroll horizontal para tarjetas de categorias */}
         <div
           ref={carouselRef}
           className="flex items-center gap-3 overflow-x-auto py-2 scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -88,7 +86,7 @@ export default function TiendaStepCatalogo({
           })}
         </div>
 
-        {/* Botón de navegación derecha (visible en pantallas medianas en adelante) */}
+        {/* Boton de navegacion derecha */}
         <button
           type="button"
           onClick={scrollRight}
@@ -99,7 +97,7 @@ export default function TiendaStepCatalogo({
         </button>
       </div>
 
-      {/* Barra de búsqueda reactiva para filtrar planes o productos */}
+      {/* Barra de busqueda reactiva para filtrar planes o productos */}
       <div className="relative my-4">
         <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-acro-muted pointer-events-none" />
         <Input
@@ -110,7 +108,7 @@ export default function TiendaStepCatalogo({
         />
       </div>
 
-      {/* Renderizado condicional de cuadrícula según la categoría seleccionada */}
+      {/* Renderizado condicional de cuadricula segun la categoria seleccionada */}
       {isPlanes ? (
         planesFiltrados.length === 0 ? (
           <p className="py-8 text-center text-acro-muted">No se encontraron planes disponibles.</p>
