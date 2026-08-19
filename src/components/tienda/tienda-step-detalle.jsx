@@ -6,9 +6,7 @@ import { Stepper, money } from "./product-card";
 
 /**
  * Paso 2 del Asistente de Tienda: Detalle de Venta y Carrito.
- * Permite revisar los articulos seleccionados, ajustar cantidades de productos,
- * configurar fechas de activación para planes, eliminar items y ver el subtotal.
-
+ *
  */
 export default function TiendaStepDetalle({
   cart = [],
@@ -24,7 +22,8 @@ export default function TiendaStepDetalle({
   if (cart.length === 0) {
     return (
       <p className="py-12 text-center text-acro-muted">
-        El carrito de compras está vacío. Regresa al catálogo para agregar productos o planes.
+        El carrito de compras está vacío. Regresa al catálogo para agregar
+        productos o planes.
       </p>
     );
   }
@@ -39,13 +38,21 @@ export default function TiendaStepDetalle({
             className="flex flex-col justify-between gap-2 rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-4 shadow-xl min-h-[140px]"
           >
             <div>
-              <h3 className="font-semibold text-blanco-acro text-base truncate" title={item.nombre}>
+              <h3
+                className="font-semibold text-blanco-acro text-base truncate"
+                title={item.nombre}
+              >
                 {item.nombre}
               </h3>
               <p className="line-clamp-2 text-xs text-acro-muted mt-0.5">
-                {item.descripcion || (item.kind === "plan" ? "Plan de suscripción" : "Producto de tienda")}
+                {item.descripcion ||
+                  (item.kind === "plan"
+                    ? "Plan de suscripción"
+                    : "Producto de tienda")}
               </p>
-              <p className="text-xl font-bold text-blanco-acro mt-2">{money(item.precio)}</p>
+              <p className="text-xl font-bold text-blanco-acro mt-2">
+                {money(item.precio)}
+              </p>
             </div>
 
             {/* Botón para solicitar eliminación de este item */}
@@ -76,7 +83,9 @@ export default function TiendaStepDetalle({
                   <input
                     type="date"
                     value={item.fechaInicio || ""}
-                    onChange={(e) => onSetPlanFechaInicio(item.key, e.target.value)}
+                    onChange={(e) =>
+                      onSetPlanFechaInicio(item.key, e.target.value)
+                    }
                     className={`w-full bg-[#4E4E4E] text-sm rounded-lg pl-3 pr-8 py-2 border-none outline-none focus:ring-1 focus:ring-amarillo-acro appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer relative z-10 ${
                       item.fechaInicio ? "text-blanco-acro" : "text-transparent"
                     }`}
@@ -114,8 +123,12 @@ export default function TiendaStepDetalle({
 
       {/* Barra de Subtotal */}
       <div className="mt-6 flex items-center justify-between border-t border-gris-claro-acro/30 pt-4 px-1">
-        <span className="text-base text-acro-muted">Subtotal ({totalItems} items)</span>
-        <span className="text-xl font-bold text-blanco-acro">{money(subtotal)}</span>
+        <span className="text-base text-acro-muted">
+          Subtotal ({totalItems} items)
+        </span>
+        <span className="text-xl font-bold text-blanco-acro">
+          {money(subtotal)}
+        </span>
       </div>
 
       {/* Modal de confirmación para eliminar producto del carrito */}

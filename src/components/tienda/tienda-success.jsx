@@ -5,12 +5,7 @@ import { money } from "./product-card";
 
 /**
  * Pantalla de confirmación de venta exitosa.
- * Muestra el resumen de la transacción realizada y permite reiniciar el flujo
- * para registrar una nueva venta rápidamente.
- *
- * @param {Object} props
- * @param {Object} props.ventaOk - Datos de la venta registrada devueltos por el servidor ({ total, items, ... })
- * @param {Function} props.onNuevaVenta - Callback para reiniciar el estado del asistente
+
  */
 export default function TiendaSuccess({ ventaOk, onNuevaVenta }) {
   if (!ventaOk) return null;

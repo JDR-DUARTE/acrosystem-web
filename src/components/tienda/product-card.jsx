@@ -1,20 +1,15 @@
 "use client";
-
+//Tarjeta de Producto
 import { useState } from "react";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 
-/**
- * Formatea un número a formato de moneda estadounidense ($0.00).
- * @param {number|string} n - Valor a formatear
- * @returns {string} Texto formateado con símbolo de dólar
- */
 function money(n) {
   return `$${Number(n || 0).toFixed(2)}`;
 }
 
 /**
  * Control incremental de cantidad (+ y -).
- * Permite al usuario ajustar la cantidad de unidades deseadas para un producto.
+ * Ajustar la cantidad de unidades deseadas para un producto.
  */
 function Stepper({ value, onDecrement, onIncrement }) {
   return (
@@ -43,10 +38,7 @@ function Stepper({ value, onDecrement, onIncrement }) {
 }
 
 /**
- * Verifica si un producto pertenece a la categoría especial de Alquiler.
- * Los productos de alquiler tienen una lógica fija de 1 unidad máxima por operación.
- * @param {Object} producto - Objeto del producto
- * @returns {boolean} True si es de alquiler
+ * Funcnion Verificar si un producto pertenece a Alquiler.
  */
 export function esAlquiler(producto) {
   return (producto.categoria?.nombre ?? "").toLowerCase() === "alquiler";
@@ -54,11 +46,6 @@ export function esAlquiler(producto) {
 
 /**
  * Componente de tarjeta de producto para el catálogo de la tienda.
- * Muestra el nombre, descripción, precio, control de cantidad y botón de agregar al carrito.
- *
- * @param {Object} props
- * @param {Object} props.producto - Datos del producto (id, nombre, precio, stock, categoria, etc.)
- * @param {Function} props.onAdd - Función callback ejecutada al hacer clic en agregar (recibe la cantidad)
  */
 export default function ProductCard({ producto, onAdd }) {
   const [qty, setQty] = useState(1);
@@ -67,13 +54,18 @@ export default function ProductCard({ producto, onAdd }) {
   return (
     <article className="flex flex-col justify-between gap-2 rounded-2xl bg-negro-fondo-acro border border-gris-claro-acro/20 p-4 shadow-xl">
       <div>
-        <h3 className="font-semibold text-blanco-acro text-base truncate" title={producto.nombre}>
+        <h3
+          className="font-semibold text-blanco-acro text-base truncate"
+          title={producto.nombre}
+        >
           {producto.nombre}
         </h3>
         <p className="line-clamp-2 text-xs text-acro-muted mt-0.5">
           {producto.descripcion || "Sin descripción disponible"}
         </p>
-        <p className="text-xl font-bold text-blanco-acro mt-2">{money(producto.precio)}</p>
+        <p className="text-xl font-bold text-blanco-acro mt-2">
+          {money(producto.precio)}
+        </p>
       </div>
 
       <div className="mt-3 flex items-center justify-between pt-1">
