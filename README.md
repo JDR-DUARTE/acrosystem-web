@@ -4,7 +4,7 @@
   
   # AcroSystem
   
-  **Sistema Integral de Gestión Deportiva y Acrobática para Acrofobia**
+  **Sistema Integral de Gestión para Acrofobia**
 </div>
 
 ---
