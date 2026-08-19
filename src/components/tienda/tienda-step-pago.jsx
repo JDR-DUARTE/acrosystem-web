@@ -25,11 +25,8 @@ const DIAS_SEMANA = [
   "Sábado",
 ];
 
-/**
- * Paso 3 del Asistente de Tienda: Datos del Cliente, Configuración y Cobro.
- * Incluye selección de categoría dinámica (desde DB), miembro asignado, días de asistencia,
- * moneda, forma de pago, promociones y cálculo automático de saldos o deudas.
- */
+ // Paso 3 de tienda, Datos del Cliente, Configuracion y Cobro.
+ 
 export default function TiendaStepPago({
   categoriasPrecio = [],
   categoriaPrecio,
@@ -65,14 +62,14 @@ export default function TiendaStepPago({
       }}
       className="flex flex-col gap-10 relative pb-40"
     >
-      {/* Sección 1: Datos del Cliente y Configuración de Categoría / Miembro */}
+      {/* Seccion 1: Datos del Cliente y Configuracion de Categoria / Miembro */}
       <section className="flex flex-col gap-5">
         <div className="flex items-center gap-2 text-blanco-acro mb-1">
           <Activity className="size-5 text-amarillo-acro" />
           <h2 className="text-xl font-semibold">Datos</h2>
         </div>
 
-        {/* Selector de Categoría (Mapeado dinámicamente desde la tabla 'categorias') */}
+        {/* Selector de Categoria */}
         <div className="flex flex-col gap-2 max-w-xl">
           <Label className="text-sm font-normal text-blanco-acro">Categoría</Label>
           <Select value={String(categoriaPrecio || "")} onValueChange={onCategoriaPrecioChange}>
@@ -108,7 +105,7 @@ export default function TiendaStepPago({
           )}
         </div>
 
-        {/* Selector de Días de Asistencia para Planes que requieren agenda */}
+        {/* Selector de Dias de Asistencia para Planes que requieren agenda */}
         {planesConAgenda.length > 0 && (
           <div className="flex flex-col gap-4 max-w-xl mt-2">
             {planesConAgenda.map((planItem) => (
@@ -142,7 +139,7 @@ export default function TiendaStepPago({
         )}
       </section>
 
-      {/* Sección 2: Selección de Moneda de Cobro */}
+      {/* Sección 2: Seleccion de Moneda de Cobro */}
       <section className="flex flex-col gap-5">
         <div className="flex items-center gap-2 text-blanco-acro mb-1">
           <Activity className="size-5 text-amarillo-acro" />
@@ -171,7 +168,7 @@ export default function TiendaStepPago({
         </div>
       </section>
 
-      {/* Sección 3: Forma de Pago */}
+      {/* Seccion 3: Forma de Pago */}
       <section className="flex flex-col gap-5">
         <div className="flex items-center gap-2 text-blanco-acro mb-1">
           <Activity className="size-5 text-amarillo-acro" />
@@ -194,7 +191,7 @@ export default function TiendaStepPago({
         </div>
       </section>
 
-      {/* Sección 4: Promoción o Descuento Aplicado */}
+      {/* Sección 4: Promocion o Descuento Aplicado */}
       <section className="flex flex-col gap-5">
         <div className="flex items-center gap-2 text-blanco-acro mb-1">
           <Activity className="size-5 text-amarillo-acro" />
@@ -218,7 +215,7 @@ export default function TiendaStepPago({
         </div>
       </section>
 
-      {/* Sección 5: Monto que abona el cliente y cálculo de deuda */}
+      {/* Sección 5: Monto que abona el cliente y calculo de deuda */}
       <section className="flex flex-col gap-5">
         <div className="flex items-center gap-2 text-blanco-acro mb-1">
           <Activity className="size-5 text-amarillo-acro" />
@@ -243,7 +240,7 @@ export default function TiendaStepPago({
         </div>
       </section>
 
-      {/* Resumen flotante y botón de confirmación */}
+      {/* Resumen flotante y boton de confirmación */}
       <div className="absolute bottom-0 right-0 left-0 pt-6 flex justify-end">
         <div className="flex flex-col items-end gap-4 max-w-xs w-full">
           <dl className="w-full rounded-xl border border-gris-oscuro-acro p-4 text-blanco-acro space-y-1 bg-negro-fondo-acro shadow-xl">
