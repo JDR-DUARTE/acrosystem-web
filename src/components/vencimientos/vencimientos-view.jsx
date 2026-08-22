@@ -79,7 +79,7 @@ export default function VencimientosView() {
     <section className="pb-24">
       {/* Título de la página */}
       <h1 className="mb-6 text-2xl font-bold text-blanco-acro md:text-3xl lg:text-4xl">
-        Vista de Vencimientos
+        Vencimientos
       </h1>
 
       {/* Contenedores de Búsqueda y Pestañas */}

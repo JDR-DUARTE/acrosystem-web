@@ -99,9 +99,8 @@ export default function HistoricoView() {
             value={fechaDesde}
             onChange={(e) => setFechaDesde(e.target.value)}
             placeholder="Desde"
-            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
 
         {/* Filtro Fecha Hasta */}
@@ -111,9 +110,8 @@ export default function HistoricoView() {
             value={fechaHasta}
             onChange={(e) => setFechaHasta(e.target.value)}
             placeholder="Hasta"
-            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 pr-10 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
+            className="h-12 w-full rounded-xl bg-gris-claro-acro px-4 text-base text-blanco-acro border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro cursor-pointer [color-scheme:dark]"
           />
-          <Calendar className="pointer-events-none absolute right-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
         </div>
       </div>
 

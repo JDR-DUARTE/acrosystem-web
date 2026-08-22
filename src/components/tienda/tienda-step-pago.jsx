@@ -14,8 +14,12 @@ import { cn } from "@/lib/utils";
 import MemberCombobox from "@/components/tienda/member-combobox";
 import { money } from "./product-card";
 
-const MONEDAS = ["COP", "VES", "USD", "EUR", "USDT"];
-const FORMAS_PAGO = ["Efectivo", "Transferencia", "Pago móvil", "Tarjeta", "Zelle"];
+const MONEDAS = ["COP", "VES", "USD", "USDT"];
+const FORMAS_PAGO_COP = ["Efectivo", "Transferencia"];
+const FORMAS_PAGO_VES = ["Efectivo", "Transferencia", "Pago móvil", "Tarjeta"];
+const FORMAS_PAGO_USD = ["Efectivo", "Zelle"];
+const FORMAS_PAGO_USDT = ["Binance"];
+
 const DIAS_SEMANA = [
   "Lunes",
   "Martes",
@@ -25,8 +29,8 @@ const DIAS_SEMANA = [
   "Sábado",
 ];
 
- // Paso 3 de tienda, Datos del Cliente, Configuracion y Cobro.
- 
+// Paso 3 de tienda, Datos del Cliente, Configuracion y Cobro.
+
 export default function TiendaStepPago({
   categoriasPrecio = [],
   categoriaPrecio,
@@ -71,8 +75,13 @@ export default function TiendaStepPago({
 
         {/* Selector de Categoria */}
         <div className="flex flex-col gap-2 max-w-xl">
-          <Label className="text-sm font-normal text-blanco-acro">Categoría</Label>
-          <Select value={String(categoriaPrecio || "")} onValueChange={onCategoriaPrecioChange}>
+          <Label className="text-sm font-normal text-blanco-acro">
+            Categoría
+          </Label>
+          <Select
+            value={String(categoriaPrecio || "")}
+            onValueChange={onCategoriaPrecioChange}
+          >
             <SelectTrigger className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-blanco-acro">
               <SelectValue placeholder="Selecciona una categoría" />
             </SelectTrigger>
@@ -90,7 +99,14 @@ export default function TiendaStepPago({
         <div className="flex flex-col gap-2 max-w-xl">
           <Label className="text-sm font-normal text-blanco-acro">
             Nombre y Apellido
-            {hasPlan && <span className="text-amarillo-acro ml-1" title="Obligatorio para planes">*</span>}
+            {hasPlan && (
+              <span
+                className="text-amarillo-acro ml-1"
+                title="Obligatorio para planes"
+              >
+                *
+              </span>
+            )}
           </Label>
           <MemberCombobox value={miembro} onChange={onMiembroChange} />
           {!miembro && (
@@ -149,7 +165,10 @@ export default function TiendaStepPago({
         <div className="flex max-w-fit border border-gris-oscuro-acro rounded-xl p-1 bg-negro-fondo-acro h-12">
           <div className="flex items-center gap-6 px-4 w-full h-full">
             {MONEDAS.map((m) => (
-              <label key={m} className="flex cursor-pointer items-center gap-2 text-blanco-acro text-sm">
+              <label
+                key={m}
+                className="flex cursor-pointer items-center gap-2 text-blanco-acro text-sm"
+              >
                 <div className="relative flex items-center justify-center size-4">
                   <input
                     type="radio"
@@ -181,7 +200,14 @@ export default function TiendaStepPago({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {FORMAS_PAGO.map((f) => (
+              {(moneda === "USD"
+                ? FORMAS_PAGO_USD
+                : moneda === "VES"
+                  ? FORMAS_PAGO_VES
+                  : moneda === "USDT"
+                    ? FORMAS_PAGO_USDT
+                    : FORMAS_PAGO_COP
+              ).map((f) => (
                 <SelectItem key={f} value={f}>
                   {f}
                 </SelectItem>
@@ -199,7 +225,10 @@ export default function TiendaStepPago({
         </div>
 
         <div className="flex flex-col gap-2 max-w-xl">
-          <Select value={idPromo || "none"} onValueChange={(v) => onPromoChange(v === "none" ? "" : v)}>
+          <Select
+            value={idPromo || "none"}
+            onValueChange={(v) => onPromoChange(v === "none" ? "" : v)}
+          >
             <SelectTrigger className="h-10 w-full bg-[#4E4E4E] border-transparent rounded-lg text-blanco-acro">
               <SelectValue />
             </SelectTrigger>

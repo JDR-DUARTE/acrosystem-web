@@ -87,14 +87,16 @@ function SidebarBody({ isAdmin, pathname, onNavigate }) {
 
       {/* Sección inferior para configuración y cierre de sesión */}
       <div className="mt-4 flex flex-col gap-1 border-t border-border pt-4">
-        <Link
-          href="/configuracion"
-          onClick={onNavigate}
-          className={itemClasses(pathname.startsWith("/configuracion"))}
-        >
-          <Settings className="size-5 shrink-0" />
-          <span className="truncate">Configuración</span>
-        </Link>
+        {isAdmin && (
+          <Link
+            href="/configuracion"
+            onClick={onNavigate}
+            className={itemClasses(pathname.startsWith("/configuracion"))}
+          >
+            <Settings className="size-5 shrink-0" />
+            <span className="truncate">Configuración</span>
+          </Link>
+        )}
 
         <button
           type="button"

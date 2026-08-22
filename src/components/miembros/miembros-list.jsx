@@ -51,18 +51,18 @@ export default function MiembrosList({ planes = [] }) {
       <div className="flex flex-col gap-3 md:flex-row md:items-center">
         {/* Contenedor relativo para el ícono */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
+          <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-blanco-acro" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre o cédula"
-            className="h-12 bg-gris-oscuro-acro pl-11"
+            className="h-12 bg-gris-oscuro-acro text-blanco-acro pl-11"
           />
         </div>
 
         {/* Filtro por Plan  */}
         <Select value={plan} onValueChange={setPlan}>
-          <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro md:w-48">
+          <SelectTrigger className="h-12 w-full !bg-gris-claro-acro md:w-48">
             <SelectValue placeholder="Tipo de plan" />
           </SelectTrigger>
           <SelectContent>
@@ -77,7 +77,7 @@ export default function MiembrosList({ planes = [] }) {
 
         {/* Filtro por Estado */}
         <Select value={estado} onValueChange={setEstado}>
-          <SelectTrigger className="h-12 w-full bg-gris-oscuro-acro md:w-40">
+          <SelectTrigger className="h-12 w-full !bg-gris-claro-acro md:w-40">
             <SelectValue placeholder="Estado" />
           </SelectTrigger>
           <SelectContent>
@@ -92,7 +92,7 @@ export default function MiembrosList({ planes = [] }) {
       <div className="mt-5 overflow-x-auto rounded-2xl bg-gris-oscuro-acro">
         <div className="min-w-[600px]">
           {/* Cabecera de la tabla. Usamos grid de CSS para alinear las columnas */}
-          <div className="grid grid-cols-[1.5fr_1fr_1fr_auto] gap-4 border-b border-border px-5 py-4 text-sm font-medium text-acro-muted">
+          <div className="grid grid-cols-[1.5fr_1fr_1fr_auto] gap-4 border-b border-border bg-gris-claro-acro px-5 py-4 text-sm font-medium text-blanco-acro">
             <span>Nombre</span>
             <span>Cédula</span>
             <span>Plan</span>
