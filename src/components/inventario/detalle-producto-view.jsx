@@ -18,14 +18,14 @@ import {
 export default function DetalleProductoView({ productId }) {
   const router = useRouter();
 
-  // consultas
+  // Queries & Mutations
   const { data: categorias = [] } = useCategorias();
   const { data: producto, isLoading: isLoadingProd } = useProducto(productId);
 
   const crearMutation = useCrearProducto();
   const actualizarMutation = useActualizarProducto();
 
-  // estado del formulario
+  // Form State
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
@@ -34,7 +34,7 @@ export default function DetalleProductoView({ productId }) {
   const [stockMinimo, setStockMinimo] = useState("5");
   const [observaciones, setObservaciones] = useState("");
 
-  // seteando
+  // Populate data when editing an existing product
   useEffect(() => {
     if (producto) {
       setNombre(producto.nombre || "");
@@ -75,6 +75,7 @@ export default function DetalleProductoView({ productId }) {
         descripcion: descripcion.trim(),
         precio: precio !== "" ? Number(precio) : 0,
         stock: stockActual !== "" ? Number(stockActual) : 0,
+        stockMinimo: stockMinimo !== "" ? Number(stockMinimo) : 5,
         idCategoria: categoriaId ? Number(categoriaId) : null,
         observaciones: observaciones.trim(),
       };
@@ -110,7 +111,7 @@ export default function DetalleProductoView({ productId }) {
 
   return (
     <section className="relative pb-28">
-      {/* Encabezado*/}
+      {/* Encabezado: Botón Volver y Título */}
       <div className="mb-6 flex items-center gap-3">
         <Link
           href="/inventario"
@@ -124,7 +125,7 @@ export default function DetalleProductoView({ productId }) {
         </h1>
       </div>
 
-      {/* Formulario  */}
+      {/* Formulario adaptativo (Mobile First 1 columna, Desktop 2 columnas) */}
       <form onSubmit={handleSubmit} className="mt-6">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-x-6 md:gap-y-5">
           {/* Nombre */}
@@ -245,7 +246,7 @@ export default function DetalleProductoView({ productId }) {
             />
           </div>
 
-          {/* Observaciones  */}
+          {/* Observaciones (Ocupa ambas columnas en Desktop) */}
           <div className="flex flex-col gap-2 md:col-span-2">
             <Label
               htmlFor="observaciones"
@@ -263,7 +264,7 @@ export default function DetalleProductoView({ productId }) {
           </div>
         </div>
 
-        {/* Botón Flotante para Guardar*/}
+        {/* Botón Flotante para Guardar (FAB) */}
         <button
           type="submit"
           disabled={isSaving}

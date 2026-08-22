@@ -23,11 +23,11 @@ import {
 export default function InventarioView() {
   const router = useRouter();
 
-  // set para filtros
+  // Filter States
   const [search, setSearch] = useState("");
   const [stockBajo, setStockBajo] = useState(false);
 
-  // consultas
+  // Queries & Mutations
   const { data: categorias } = useCategorias();
   const {
     data: productos,
@@ -42,7 +42,7 @@ export default function InventarioView() {
   const eliminarMutation = useEliminarProducto();
   const [deletingProduct, setDeletingProduct] = useState(null);
 
-  // confirmar eliminar
+  // Confirm Product Deletion
   const handleDeleteConfirm = async () => {
     if (!deletingProduct) return;
     try {
@@ -67,11 +67,10 @@ export default function InventarioView() {
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-acro-muted" />
           <Input
-            type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar por nombre"
-            className="h-12 w-full rounded-xl bg-blanco-acro pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
+            className="h-12 w-full rounded-xl bg-[#3E3E3E] pl-11 pr-4 text-base text-blanco-acro placeholder:text-acro-muted border-none focus:outline-none focus:ring-1 focus:ring-amarillo-acro"
           />
         </div>
 
@@ -135,7 +134,7 @@ export default function InventarioView() {
                     {p.nombre}
                   </h2>
 
-                  {/* Iconos de Acción: Editar y Eliminar */}
+                  {/* Iconos de Acción: Editar (Lápiz amarillo) y Eliminar (Papelera amarilla) */}
                   <div className="flex shrink-0 items-center gap-2">
                     <button
                       type="button"
@@ -156,7 +155,7 @@ export default function InventarioView() {
                   </div>
                 </div>
 
-                {/* Fila de Categoría */}
+                {/* Fila de Categoría (Etiqueta amarilla con icono Tag) */}
                 {categoriaNombre && (
                   <div className="mt-1 flex items-center gap-1.5 text-sm font-normal text-blanco-acro">
                     <Tag className="size-4 text-amarillo-acro shrink-0" />
@@ -171,7 +170,7 @@ export default function InventarioView() {
                   </p>
                 )}
 
-                {/* Pie de la tarjeta */}
+                {/* Pie de la tarjeta: Precio y Stock directamente sobre el fondo de la card (sin píldora blanca) */}
                 <div className="mt-4 flex items-center justify-end gap-4 text-sm font-medium">
                   <span className="text-acro-muted">
                     Precio{" "}
@@ -181,7 +180,13 @@ export default function InventarioView() {
                   </span>
                   <span className="text-acro-muted">
                     Stock{" "}
-                    <span className="font-semibold text-blanco-acro ml-1">
+                    <span
+                      className={
+                        p.stock <= (p.stockMinimo ?? 5)
+                          ? "font-bold text-acro-danger ml-1"
+                          : "font-semibold text-blanco-acro ml-1"
+                      }
+                    >
                       {p.stock} unid
                     </span>
                   </span>
@@ -192,7 +197,7 @@ export default function InventarioView() {
         </div>
       )}
 
-      {/* Botón Flotante para Agregar  */}
+      {/* Botón Flotante para Agregar Producto (FAB) (+) */}
       <button
         type="button"
         aria-label="Agregar producto"

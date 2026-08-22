@@ -9,6 +9,7 @@ const PRODUCTO_SELECT = `
   descripcion_detalle,
   precio_venta_usd,
   stock_sistema,
+  stock_minimo,
   categoria_producto ( id_categoria_producto, nombre )
 `;
 
@@ -19,6 +20,7 @@ function mapProducto(row) {
     descripcion: row.descripcion_detalle ?? "",
     precio: Number(row.precio_venta_usd ?? 0),
     stock: row.stock_sistema ?? 0,
+    stockMinimo: row.stock_minimo ?? 5,
     categoria: row.categoria_producto
       ? {
           id: row.categoria_producto.id_categoria_producto,
@@ -36,10 +38,16 @@ export async function listProductos({ search, categoria, stockBajo } = {}) {
     .order("nombre");
   if (categoria) query = query.eq("id_categoria_producto", categoria);
   if (search) query = query.ilike("nombre", `%${search}%`);
-  if (stockBajo) query = query.lte("stock_sistema", 5);
   const { data, error } = await query;
   if (error) throw new Error(error.message);
-  return (data ?? []).map(mapProducto);
+
+  let productos = (data ?? []).map(mapProducto);
+
+  if (stockBajo) {
+    productos = productos.filter((p) => p.stock <= p.stockMinimo);
+  }
+
+  return productos;
 }
 
 export async function getProducto(id) {
@@ -64,6 +72,7 @@ export async function crearProducto(input) {
     descripcion,
     precio,
     stock,
+    stockMinimo,
     idCategoria,
     categoriaId,
     observaciones,
@@ -72,6 +81,7 @@ export async function crearProducto(input) {
 
   const catId = idCategoria || categoriaId || null;
   const stockNum = Number(stock) || 0;
+  const stockMinNum = stockMinimo !== undefined ? Number(stockMinimo) : 5;
 
   const { data, error } = await supabase
     .from("productos")
@@ -80,6 +90,7 @@ export async function crearProducto(input) {
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
       stock_sistema: stockNum,
+      stock_minimo: stockMinNum,
       id_categoria_producto: catId ? Number(catId) : null,
     })
     .select(PRODUCTO_SELECT)
@@ -117,6 +128,7 @@ export async function actualizarProducto(id, input) {
     descripcion,
     precio,
     stock,
+    stockMinimo,
     idCategoria,
     categoriaId,
     observaciones,
@@ -135,6 +147,7 @@ export async function actualizarProducto(id, input) {
   const newStock = Number(stock) || 0;
   const oldStock = Number(currentProduct.stock_sistema) || 0;
   const stockDiff = newStock - oldStock;
+  const stockMinNum = stockMinimo !== undefined ? Number(stockMinimo) : 5;
 
   const { data, error } = await supabase
     .from("productos")
@@ -143,6 +156,7 @@ export async function actualizarProducto(id, input) {
       descripcion_detalle: descripcion?.trim() || null,
       precio_venta_usd: Number(precio) || 0,
       stock_sistema: newStock,
+      stock_minimo: stockMinNum,
       id_categoria_producto: catId ? Number(catId) : null,
     })
     .eq("id_producto", id)

@@ -13,19 +13,19 @@ export default function LoginForm() {
   const [error, setError] = useState(null);
   const [pending, setPending] = useState(false);
   const router = useRouter();
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
     setPending(true);
-    
+
     try {
       const supabase = createClient();
       const { data, error: err } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      
+
       if (err) {
         setError("Credenciales inválidas. Verifica tus datos.");
         setPending(false);
@@ -50,16 +50,21 @@ export default function LoginForm() {
           priority
           className="size-[150px] object-contain"
         />
-        <h1 className="mt-2 text-2xl font-bold text-amarillo-acro">AcroSystem</h1>
+        <h1 className="mt-2 text-2xl font-bold text-amarillo-acro">
+          AcroSystem
+        </h1>
       </div>
 
       <form onSubmit={handleLogin} className="mt-8 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-lg text-gris-claro-acro">
-            Email Address
+          <label
+            htmlFor="email"
+            className=" flex items-center text-lg text-gris-claro-acro"
+          >
+            <User className="size-6" />
+            Correo
           </label>
           <div className="relative">
-            <User className="pointer-events-none absolute left-4 top-1/2 size-6 -translate-y-1/2 text-blanco-acro" />
             <input
               id="email"
               type="email"
@@ -68,17 +73,20 @@ export default function LoginForm() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-16 w-full rounded-xl bg-gris-claro-acro pl-14 pr-4 text-lg text-blanco-acro placeholder:text-blanco-acro/80 focus:outline-none focus:ring-2 focus:ring-amarillo-acro"
+              className="h-16 w-full rounded-xl !bg-gris-claro-acro pl-4 pr-4 text-lg text-blanco-acro placeholder:text-blanco-acro/80 focus:outline-none focus:ring-2 focus:ring-amarillo-acro"
             />
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-lg text-gris-claro-acro">
-            Password
+          <label
+            htmlFor="password"
+            className="flex items-center text-lg text-gris-claro-acro"
+          >
+            <LockKeyhole className="size-6" />
+            Contraseña
           </label>
-          <div className="relative">
-            <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 size-6 -translate-y-1/2 text-blanco-acro" />
+          <div className="relative ">
             <input
               id="password"
               type="password"
@@ -87,7 +95,7 @@ export default function LoginForm() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-16 w-full rounded-xl bg-gris-claro-acro pl-14 pr-4 text-lg text-blanco-acro placeholder:text-blanco-acro/80 focus:outline-none focus:ring-2 focus:ring-amarillo-acro"
+              className="h-16 w-full rounded-xl !bg-gris-oscuro-acro pl-4 pr-4 text-lg text-blanco-acro placeholder:text-blanco-acro/80 focus:outline-none focus:ring-2 focus:ring-amarillo-acro"
             />
           </div>
         </div>
@@ -101,10 +109,10 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={pending}
-          className="mt-4 flex h-16 w-full items-center justify-center gap-2 rounded-xl bg-gris-claro-acro text-lg text-blanco-acro transition-colors hover:bg-gris-claro-acro/80 disabled:opacity-70"
+          className="mt-4 flex h-16 w-full items-center justify-center gap-2 rounded-xl bg-amarillo-acro font-bold text-lg text-negro-fondo-acro transition-colors hover:bg-amarillo-acro/70 disabled:opacity-70"
         >
           {pending ? <Loader2 className="size-5 animate-spin" /> : null}
-          Ingresar al sistema
+          Ingresar
         </button>
 
         <Link
